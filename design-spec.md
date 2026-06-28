@@ -1,8 +1,8 @@
 # matsuba 設計書
 
-**バージョン:** 0.5（Phase 2設計確定）
+**バージョン:** 0.6（Phase 2完了）
 **作成日:** 2026年6月
-**ステータス:** Phase 1完了・Phase 2設計確定・実装開始前
+**ステータス:** Phase 2完了・Phase 3設計中
 
 ---
 
@@ -26,16 +26,17 @@
 | 役割 | 技術 | 選定理由 |
 |------|------|----------|
 | UIフレームワーク | React + TypeScript | クロスプラットフォーム展開のしやすさ、共同開発での可読性 |
-| 状態管理 | Zustand | 軽量・シンプル、後にReduxへ移行も可能 |
-| リッチテキストエディタ | Tiptap（Phase 2で導入） | ルビのカスタム拡張が可能、Markdown変換対応 |
-| ローカルDB | IndexedDB | localStorageより大容量・高速、Electron移行時もそのまま使用可能 |
+| 状態管理 | Zustand | 軽量・シンプル |
+| リッチテキストエディタ | Tiptap 2.10.4（ProseMirror基盤） | ルビのカスタム拡張が可能、Markdown変換対応 |
+| ローカルDB | IndexedDB（DB Version 3） | localStorageより大容量・高速 |
 | ZIPバックアップ | JSZip | ブラウザ上でのフォルダ構造付きZIP生成 |
-| PDF出力 | ブラウザprint API / react-pdf（Phase 2） | 確認・共有用途 |
-| クラウド連携 | Dropbox API / Google Drive API（Phase 3） | 当初はローカルファイル経由でDropbox・Driveの自動同期を利用 |
+| PDF出力 | window.print()（新規ウィンドウ方式） | 確認・共有用途。Phase 3でreact-pdfに移行予定 |
+| クラウド連携 | Dropbox API / Google Drive API（Phase 3） | — |
 
-### バージョンのcontent形式
-- **Phase 1（現在）**：プレーンテキスト（string）
-- **Phase 2以降**：Tiptap JSON（ProseMirrorドキュメント形式）+ プレーンテキストを併用保存
+### コンテンツ形式
+- **currentContent**：Tiptap JSON（ProseMirrorドキュメント形式）
+- **currentContentText**：Markdown文字列（エクスポート・バックアップ・検索用）
+- 両方を常に同時保存する設計
 
 ---
 
@@ -62,50 +63,38 @@
 | 15 | ショートカットキー | ✅ |
 | 16 | ログから原稿へのジャンプ | ✅ |
 
-### Phase 2 — エディタ強化（設計確定・実装開始前）
+### Phase 2 — エディタ強化（完了）
 
-| # | 機能 | 概要 | 優先順位 |
-|---|------|------|----------|
-| 17 | Tiptap導入・基本リッチテキスト | SimpleEditorをTiptapに置き換え。太字・イタリック・見出し・リスト・取り消し線 | Step 1 |
-| 18 | Tiptap JSON＋プレーンテキスト併用保存 | content（JSON）とcontentText（プレーンテキスト）を両方保存 | Step 1 |
-| 19 | ルビ入力 | Tiptapカスタム拡張。4種の入力方法 | Step 2 |
-| 20 | レイアウトプリセット強化 | TiptapとプリセットのCSS連携。切り替えがリアルタイムに反映 | Step 3 |
-| 21 | PDF出力（確認・共有用） | ブラウザprint APIまたはreact-pdf。タイトル・バージョン・日付をヘッダーに含める | Step 4 |
-| 22 | 参考画像添付 | 原稿ごとにサイドパネルで管理。本文エディタには表示しない | Step 5 |
-| 23 | カレンダービュー強化 | 原稿ごとのフィルタ・タグごとの色分け表示 | Step 6 |
+| # | 機能 | 状態 |
+|---|------|------|
+| 17 | Tiptap導入・基本リッチテキスト | ✅ |
+| 18 | Tiptap JSON＋Markdown併用保存 | ✅ |
+| 19 | ルビ入力（4種の入力方法・グループルビ） | ✅ |
+| 20 | レイアウトプリセット強化（CSSカスタムプロパティ連携） | ✅ |
+| 21 | PDF出力（window.print()方式・確認共有用） | ✅ |
+| 22 | 参考画像添付（サイドパネル・ペイン表示・モーダル拡大） | ✅ |
+| 23 | カレンダービュー強化（原稿フィルタ・タグ色分け・凡例） | ✅ |
 
 ### Phase 3 — 拡張（予定）
 
-| # | 機能 | 概要 |
-|---|------|------|
-| 24 | 縦書きの本格対応 | CSS writing-modeとTiptapの統合 |
-| 25 | Markdown ↔ リッチテキスト切り替え | エディタモードの切り替え |
-| 26 | Dropbox API連携 | APIキーを設定画面で入力し自動同期 |
-| 27 | Google Drive API連携 | 同上 |
-| 28 | Electronデスクトップ版 | Reactコードを流用 |
-| 29 | React Nativeモバイル版 | 検討 |
-| 30 | ショートカットキーのカスタマイズ | 設定画面に追加 |
-| 31 | 統計グラフ | 月ごと・週ごとの執筆時間グラフ |
+| # | 機能 | 優先度 |
+|---|------|--------|
+| 24 | 縦書き本格対応（TiptapとCSS writing-modeの統合） | 最高 |
+| 25 | Markdown ↔ リッチテキスト切り替え | 最高 |
+| 26 | Dropbox API連携 | 高 |
+| 27 | Google Drive API連携 | 高 |
+| 28 | PDF強化（react-pdf・ファイル名自動設定・縦書き対応） | 中 |
+| 29 | Electronデスクトップ版 | 中 |
+| 30 | React Nativeモバイル版（検討） | 低 |
+| 31 | ショートカットキーのカスタマイズ | 低 |
+| 32 | 統計グラフ（執筆時間の可視化） | 低 |
 
 ---
 
 ## 4. データ構造
 
-### Phase 2での変更点
-
 ```typescript
-// バージョン（Phase 2での変更）
-type Version = {
-  id: string
-  label: string                  // 「初稿」「第二稿」など（表示用）
-  content: unknown               // Tiptap JSON（Phase 2以降）
-  contentText: string            // プレーンテキスト（新規追加・検索・エクスポート用）
-  savedAt: number
-  note: string
-  charCount: number
-}
-
-// 原稿（Phase 2での変更）
+// 原稿
 type Manuscript = {
   id: string
   title: string
@@ -118,26 +107,75 @@ type Manuscript = {
   attachments: Attachment[]
   versions: Version[]
   logs: EditLog[]
-  currentContent: unknown        // Tiptap JSON（Phase 2以降）
-  currentContentText: string     // プレーンテキスト（新規追加）
+  currentContent: TiptapJSON      // Tiptap JSONコンテンツ
+  currentContentText: string      // Markdownテキスト（エクスポート用）
 }
 
-// 参考画像（Phase 2で実装）
+// バージョン
+type Version = {
+  id: string
+  label: string                   // 「初稿」「第二稿」など（表示用）
+  content: TiptapJSON
+  contentText: string             // Markdownテキスト
+  savedAt: number
+  note: string
+  charCount: number
+}
+
+// 執筆ログ
+type EditLog = {
+  id: string
+  startedAt: number
+  endedAt: number
+  charCountDelta: number
+}
+
+// タグ
+type TagCategory = {
+  id: string
+  label: string
+  color: string
+  tags: Tag[]
+}
+
+type Tag = {
+  id: string
+  categoryId: string
+  label: string
+  color: string
+}
+
+// レイアウトプリセット
+type LayoutPreset = {
+  id: string
+  label: string
+  isBuiltIn: boolean
+  lineHeight: number
+  fontSize: number
+  indent: 'none' | '1em' | '2em'
+  alignment: 'left' | 'center' | 'right' | 'justify'
+  letterSpacing: number
+  paragraphSpacing: number
+}
+
+// 参考画像
 type Attachment = {
   id: string
   manuscriptId: string
   fileName: string
-  dataUrl: string                // Base64エンコード
+  dataUrl: string                 // Base64
   addedAt: number
   note: string
 }
+
+// ペイン状態
+type PaneMode = VersionId | 'attachments' | null
+
+type PaneState = {
+  manuscriptId: string | null
+  versionId: PaneMode             // null=現在版, 'attachments'=参考画像ペイン
+}
 ```
-
-### 移行方針（Phase 1 → Phase 2）
-
-- **クリーンスタート**：既存のIndexedDBデータを破棄してPhase 2形式で作り直す
-- `DB_VERSION` を3に上げてマイグレーションを実行
-- 開発初期段階のためデータロスの影響が小さいと判断
 
 ---
 
@@ -153,26 +191,28 @@ type Attachment = {
 │サイドバー │  メインエリア（表示モードによって切り替わる）    │
 │          │                                              │
 │・原稿一覧 │  [編集モード] 1〜3ペインのエディタ            │
-│・ソート   │  [ログモード]  タイムライン / カレンダー       │
-│・タグ    │  [設定モード]  タグ・プリセット・クラウド設定   │
+│  （サムネ │  [ログモード]  タイムライン / カレンダー       │
+│   イル付）│  [設定モード]  タグ・プリセット・クラウド設定   │
+│・ソート   │                                              │
+│・タグ    │                                              │
 │  フィルタ │                                              │
 │          │                                              │
 └──────────┴──────────────────────────────────────────────┘
 ```
 
-### 編集モード（Phase 2）
+### 編集モード（ペイン構成）
 
 ```
 ┌───────────────────────────────────────────────────────────┐
-│ 原稿A ▼  現在版 ▼                               × 閉じる  │
+│ 原稿A ▼  現在版 ▼（または過去版・参考画像）      × 閉じる  │
 ├───────────────────────────────────────────────────────────┤
-│ B  I  S  H1 H2 H3  ─  ル  …（ツールバー）               │
+│ B  I  S  H1 H2 H3  ─  ルビ  ↩ ↪（ツールバー）           │
 ├───────────────────────────────────────────────────────────┤
 │                                                           │
-│  Tiptapエディタ（リッチテキスト）                           │
+│  Tiptapエディタ（リッチテキスト・ルビ対応）                 │
 │                                                           │
 ├───────────────────────────────────────────────────────────┤
-│ 散文 | 1,234字 | 書き出し▾ | 履歴 | 設定⚙               │
+│ 散文 | 1,234字 | 書き出し▾ | 履歴 | 🖼 | 設定⚙          │
 └───────────────────────────────────────────────────────────┘
 ```
 
@@ -182,21 +222,23 @@ type Attachment = {
 
 ```
 src/
-├── types/
-│   └── index.ts                    # Phase 2でVersion・Manuscriptの型を更新
+├── types/index.ts
 ├── store/
-│   ├── manuscriptStore.ts
+│   ├── manuscriptStore.ts      # 参考画像操作を含む
 │   ├── tagStore.ts
 │   ├── layoutStore.ts
 │   └── uiStore.ts
-├── db/
-│   └── index.ts                    # DB_VERSION: 3に更新
+├── db/index.ts                 # DB Version 3
 ├── hooks/
 │   ├── useAutoSave.ts
 │   ├── useEditLog.ts
-│   ├── useExport.ts                # contentTextを使用するよう更新
-│   ├── useBackup.ts                # contentTextを使用するよう更新
-│   └── useScrollSync.ts
+│   ├── useExport.ts            # contentTextベース
+│   ├── useBackup.ts            # 画像をZIPに含む
+│   ├── useScrollSync.ts
+│   └── usePrint.ts             # window.print()方式
+├── utils/
+│   ├── tiptapToMarkdown.ts     # Tiptap JSON → Markdown変換
+│   └── tiptapToHtml.ts         # Tiptap JSON → HTML変換（印刷用）
 └── components/
     ├── common/
     │   ├── Header.tsx
@@ -205,23 +247,27 @@ src/
     ├── Sidebar/
     │   ├── Sidebar.tsx
     │   ├── ManuscriptList.tsx
-    │   ├── ManuscriptItem.tsx
+    │   ├── ManuscriptItem.tsx  # サムネイル表示対応
     │   └── TagFilter.tsx
     ├── Editor/
     │   ├── PaneContainer.tsx
     │   ├── EditorPane.tsx
-    │   ├── PaneHeader.tsx
-    │   ├── TiptapEditor.tsx        # 新規：SimpleEditorを置き換え
-    │   ├── Toolbar.tsx             # 新規：書式ツールバー
-    │   ├── RubyInput.tsx           # 新規：ルビ入力ダイアログ（Step 2）
+    │   ├── PaneHeader.tsx      # 参考画像ペイン対応
+    │   ├── TiptapEditor.tsx
+    │   ├── Toolbar.tsx
+    │   ├── RubyInput.tsx
     │   ├── VersionPanel.tsx
     │   ├── ExportMenu.tsx
-    │   ├── AttachmentPanel.tsx     # 新規：参考画像添付（Step 5）
-    │   └── ManuscriptDetailPanel.tsx
+    │   ├── ManuscriptDetailPanel.tsx
+    │   ├── AttachmentPanel.tsx # 参考画像サイドパネル
+    │   ├── AttachmentPane.tsx  # 参考画像ペイン表示
+    │   ├── AttachmentViewer.tsx # モーダル拡大表示
+    │   └── extensions/
+    │       └── Ruby.ts         # Tiptapルビ拡張（インラインノード）
     ├── Log/
     │   ├── LogView.tsx
     │   ├── Timeline.tsx
-    │   └── CalendarView.tsx        # 強化：原稿フィルタ・タグ色分け（Step 6）
+    │   └── CalendarView.tsx    # 原稿フィルタ・タグ色分け対応
     └── Settings/
         ├── SettingsView.tsx
         ├── TagManager.tsx
@@ -231,134 +277,26 @@ src/
 
 ---
 
-## 7. ルビ仕様（Phase 2・Step 2）
+## 7. ルビ仕様（実装済み）
 
-### 入力記法
-`{薔薇|ばら}` 形式を採用。
+### 入力方法（4種）
+| 方法 | 操作 |
+|------|------|
+| ショートカット | テキストを選択 → `Ctrl+Shift+R`（Mac: `Cmd+Shift+R`）|
+| 右クリックメニュー | テキストを選択 → 右クリック（テキスト選択中のみ）|
+| ツールバーボタン | テキストを選択 → ツールバーの「ルビ」ボタン |
+| 記法の直接入力 | `{薔薇|ばら}` と入力した瞬間に自動変換 |
 
-### 入力方法（4種併用）
-| 方法 | 操作 | 実装 |
-|------|------|------|
-| ショートカット | テキストを選択 → `Ctrl+R`（Mac: `Cmd+R`）→ ダイアログ | TiptapコマンドをキーバインドにマップY |
-| 右クリックメニュー | テキストを選択 → 右クリック →「ルビを追加」| ContextMenuイベントで制御 |
-| ツールバーボタン | テキストを選択 → ツールバーの「ルビ」ボタン | Toolbarコンポーネントから呼び出し |
-| 記法の直接入力 | `{薔薇|ばら}` と入力した瞬間に自動変換 | Tiptap InputRuleで実装 |
-
-### 表示設定
-- デフォルト：グループルビ（単語全体にまとめて振る）
-- モノルビ（一文字ずつ）はダイアログで切り替え可能
-- Phase 3の縦書き実装時にルビ位置を右側に自動調整
-
-### Tiptapカスタム拡張の構造
-```typescript
-// RubyExtension（Tiptapカスタムマーク）
-const Ruby = Mark.create({
-  name: 'ruby',
-  addAttributes() {
-    return {
-      reading: { default: '' },   // 読み仮名
-      type: { default: 'group' }, // 'group' | 'mono'
-    }
-  },
-  // renderHTMLで<ruby><rt>を出力
-  // addInputRulesで {漢字|かな} 記法を自動変換
-  // addKeyboardShortcutsでCtrl+Rを登録
-})
-```
+### 仕様
+- グループルビのみ（モノルビは削除）
+- Tiptapインラインノードとして実装
+- Markdownエクスポート時は `{ベーステキスト|よみ}` 形式で出力
 
 ---
 
-## 8. レイアウトプリセット（Phase 2での強化）
+## 8. タグ仕様
 
-Phase 1では `fontSize` や `lineHeight` をインラインスタイルで適用していた。
-Phase 2ではTiptapのエディタルートにCSSカスタムプロパティを付与して管理する。
-
-```typescript
-// TiptapEditorのルート要素に適用
-const presetToCssVars = (preset: LayoutPreset): React.CSSProperties => ({
-  '--editor-font-size':         `${preset.fontSize}px`,
-  '--editor-line-height':       preset.lineHeight,
-  '--editor-letter-spacing':    `${preset.letterSpacing}em`,
-  '--editor-text-indent':       preset.indent === 'none' ? '0' : preset.indent,
-  '--editor-text-align':        preset.alignment,
-  '--editor-paragraph-spacing': `${preset.paragraphSpacing}em`,
-})
-```
-
----
-
-## 9. PDF出力仕様（Phase 2・Step 4）
-
-### 用途
-確認・共有用。入稿データとしての使用は想定しない。
-
-### 実装方針
-ブラウザの `window.print()` APIを使用した印刷ダイアログ経由のPDF保存を第一候補とする。スタイルシートで印刷用レイアウトを定義する。
-
-```
-出力内容：
-  ヘッダー：タイトル・バージョン名・日付
-  本文：Tiptapのコンテンツ（書式・ルビを含む）
-  フッター：ページ番号
-```
-
-### react-pdfへの切り替え条件
-`window.print()` で縦書き・ルビのレンダリングが不十分な場合は `react-pdf` に切り替える（Phase 3で判断）。
-
----
-
-## 10. 参考画像添付仕様（Phase 2・Step 5）
-
-### 設計方針
-- 本文エディタには画像を表示しない（執筆体験を損なわないため）
-- 原稿ごとにサイドパネル（`AttachmentPanel`）で管理
-- 用途：執筆の参考・インスピレーション画像・資料写真
-
-### UI
-```
-┌─────────────────────┐
-│ 参考画像            │
-│ ＋ 画像を追加       │
-├─────────────────────┤
-│ [画像サムネイル]    │
-│ ファイル名          │
-│ メモ欄              │
-│ × 削除              │
-└─────────────────────┘
-```
-
-### データ
-```typescript
-type Attachment = {
-  id: string
-  manuscriptId: string
-  fileName: string
-  dataUrl: string    // Base64（IndexedDBに保存）
-  addedAt: number
-  note: string
-}
-```
-
----
-
-## 11. カレンダービュー強化仕様（Phase 2・Step 6）
-
-### 追加機能
-
-**原稿ごとのフィルタ**
-- カレンダー上部にフィルタドロップダウンを設置
-- 「すべての原稿」または特定の原稿を選択して表示を絞り込む
-
-**タグごとの色分け**
-- 各原稿に付与された「ジャンル」カテゴリのタグの色をカレンダーセルに反映
-- 複数原稿を書いた日は最初の原稿のタグ色を使用（または混色）
-
----
-
-## 12. タグ仕様
-
-### 初期カテゴリ
-カテゴリ内で排他選択（1カテゴリにつき1タグまで付与可能）。
+カテゴリ内で排他選択（1カテゴリにつき1タグまで）。
 
 | カテゴリ | 初期タグ |
 |----------|----------|
@@ -366,11 +304,43 @@ type Attachment = {
 | 状態 | アイデア・執筆中・推敲中・完成・保留 |
 | 公開先 | 未定・同人・商業・Web・非公開 |
 
+カレンダービューでは「ジャンル」カテゴリのタグ色が原稿の色として使用される。
+
 ---
 
-## 13. ショートカットキー
+## 9. レイアウトプリセット
 
-### Phase 1実装済み（固定）
+CSSカスタムプロパティ（`--editor-*`）でエディタとプレビューを統一管理。
+
+| プリセット | 用途 |
+|-----------|------|
+| 散文 | 小説・エッセイ（組み込み・削除不可） |
+| 詩 | 詩・歌詞（組み込み・削除不可） |
+| 原稿用紙 | 縦書き原稿（組み込み・削除不可） |
+
+カスタムプリセットは自由に作成・削除可能。
+
+---
+
+## 10. ファイル命名規則
+
+```
+matsuba_backup_YYYYMMDD.zip
+  原稿タイトル/
+    current.md          ← 現在の版（Markdown）
+    v01_YYYYMMDD.md    ← バージョン（Markdown）
+    v02_YYYYMMDD.md
+    images/
+      01_filename.jpg   ← 参考画像
+      02_filename.png
+```
+
+- タイトルは最大20文字（記号はアンダースコアに変換）
+- バージョンは `v01`, `v02`... 形式（ゼロパディング）
+
+---
+
+## 11. ショートカットキー（固定）
 
 | 操作 | Windows | Mac |
 |------|---------|-----|
@@ -382,47 +352,56 @@ type Attachment = {
 | 1ペイン | `Ctrl+Shift+1` | `Cmd+Shift+1` |
 | 2ペイン | `Ctrl+Shift+2` | `Cmd+Shift+2` |
 | 3ペイン | `Ctrl+Shift+3` | `Cmd+Shift+3` |
+| ルビを追加 | `Ctrl+Shift+R` | `Cmd+Shift+R` |
 
-### Phase 2追加予定
+Phase 3でカスタマイズ機能を追加予定。
 
-| 操作 | Windows | Mac |
-|------|---------|-----|
-| ルビを追加 | `Ctrl+R` | `Cmd+R` |
+---
+
+## 12. PDF出力仕様
+
+### 現在（Phase 2）
+- `window.print()` を使用した新規ウィンドウ方式
+- ファイル名は手動入力が必要（ブラウザのセキュリティ制限）
+- タイトル・バージョン・日付をヘッダーに含める
+- 書式（太字・見出し・ルビ）が印刷に反映される
 
 ### Phase 3予定
-ショートカットキーのカスタマイズ機能を設定画面に追加。
+- `react-pdf` に移行してファイル名の自動設定に対応
+- 縦書き対応
 
 ---
 
-## 14. ローカルファイルの命名規則
+## 13. 参考画像仕様（Phase 2実装済み）
 
-```
-matsuba_backup_YYYYMMDD.zip
-  薔薇について/
-    current.md
-    v01_20260615.md    ← v01, v02... 形式（ゼロパディング）
-    v02_20260622.md
-```
+### 表示方式
+| 方式 | 場所 | 説明 |
+|------|------|------|
+| サムネイル | サイドバー | 最大3枚表示、3枚超は +N 表示 |
+| サイドパネル | エディタ右側 | ステータスバーの🖼ボタンで開閉 |
+| ペイン表示 | エディタペイン | ペインヘッダーのドロップダウンで「参考画像」を選択 |
+| モーダル拡大 | 全画面 | サムネイルクリックで表示、左右キーで切り替え |
 
-- タイトルが長い場合は先頭20文字を上限（設定で変更可能）
-- `.md` ファイルの内容は `contentText`（プレーンテキスト）を使用
+### データ
+- Base64でIndexedDBに保存
+- ZIPバックアップ時に `images/` フォルダとして含まれる
 
 ---
 
-## 15. 未確定事項・今後の検討
+## 14. 未確定事項・今後の検討
 
 | 項目 | 内容 | 検討時期 |
 |------|------|----------|
-| PDF出力の実装方法 | `window.print()` vs `react-pdf` | Phase 2 Step 4 |
 | 縦書きとTiptapの統合 | CSS writing-modeとの互換性 | Phase 3 |
+| react-pdfへの移行 | ファイル名自動設定・縦書き対応 | Phase 3 |
 | Electronへの移行タイミング | Phase 3の優先順位 | Phase 2完了後 |
-| モバイルアプリの方式 | React NativeかPWAか | Phase 3 |
-| 統計グラフ | 月ごと・週ごとの執筆時間グラフ | Phase 3 |
+| モバイルアプリの方式 | React NativeかPWAか | Phase 3後半 |
 | ショートカットのカスタマイズ | 設定画面に追加 | Phase 3 |
+| 統計グラフ | 月ごと・週ごとの執筆時間グラフ | Phase 3後半 |
 
 ---
 
-## 16. 開発フェーズ概要
+## 15. 開発フェーズ概要
 
 ```
 Phase 1（完了）
@@ -431,20 +410,18 @@ Phase 1（完了）
   .txt / .md エクスポート・ZIPバックアップ
   設定画面・未保存マーカー・ショートカットキー
 
-Phase 2（実装開始前）
-  Step 1: Tiptap導入・基本リッチテキスト・JSON+テキスト併用保存
-  Step 2: ルビ入力（Tiptapカスタム拡張）
-  Step 3: レイアウトプリセット強化
-  Step 4: PDF出力（確認・共有用）
-  Step 5: 参考画像添付
-  Step 6: カレンダービュー強化（原稿フィルタ・タグ色分け）
+Phase 2（完了）
+  Tiptapリッチテキストエディタ導入
+  JSON + Markdownの併用保存
+  ルビ入力（4種の入力方法）
+  レイアウトプリセット強化（CSSカスタムプロパティ）
+  PDF出力（window.print()方式）
+  参考画像添付（サイドパネル・ペイン・モーダル）
+  カレンダービュー強化（原稿フィルタ・タグ色分け）
 
-Phase 3（予定）
-  縦書きの本格対応（Tiptap統合）
-  Markdown ↔ リッチテキスト切り替え
-  Dropbox / Google Drive API連携
-  Electronデスクトップ版
-  React Nativeモバイル版（検討）
-  ショートカットキーのカスタマイズ
-  統計グラフ
+Phase 3（予定・優先度順）
+  最優先：縦書き本格対応・Markdown切り替え
+  高：Dropbox / Google Drive API連携
+  中：PDF強化（react-pdf）・Electronデスクトップ版
+  低：React Native・ショートカットカスタマイズ・統計グラフ
 ```
