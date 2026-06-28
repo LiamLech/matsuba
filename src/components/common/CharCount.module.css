@@ -1,0 +1,9 @@
+.charCount {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--c-ink-faint);
+}
+
+.target {
+  color: var(--c-paper-deep);
+}

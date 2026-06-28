@@ -1,0 +1,139 @@
+.panel {
+  width: 200px;
+  background: var(--c-paper-dim);
+  border-left: var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+  border-bottom: var(--border);
+  flex-shrink: 0;
+}
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-2) 0;
+}
+
+.empty {
+  padding: var(--sp-4) var(--sp-3);
+  font-size: 11px;
+  color: var(--c-ink-faint);
+  text-align: center;
+  line-height: 1.6;
+}
+
+.item {
+  position: relative;
+  padding: var(--sp-2) var(--sp-3);
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background var(--tx-fast);
+}
+
+.item:hover {
+  background: var(--c-paper-deep);
+}
+
+.itemActive {
+  border-left-color: var(--c-accent);
+  background: rgba(196, 149, 106, 0.06);
+}
+
+.itemLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-ink);
+  margin-bottom: 2px;
+}
+
+.itemActive .itemLabel {
+  color: var(--c-accent-dim);
+}
+
+.itemNote {
+  font-size: 11px;
+  color: var(--c-ink-faint);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.itemMeta {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-ink-faint);
+  display: flex;
+  gap: var(--sp-2);
+}
+
+.removeBtn {
+  position: absolute;
+  right: var(--sp-2);
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--c-ink-faint);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity var(--tx-fast), color var(--tx-fast);
+}
+
+.item:hover .removeBtn {
+  opacity: 0.6;
+}
+
+.removeBtn:hover {
+  opacity: 1 !important;
+  color: var(--c-danger);
+}
+
+/* モーダル内フォーム */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.label {
+  font-size: 12px;
+  color: var(--c-ink-mid);
+  font-weight: 500;
+}
+
+.input,
+.textarea {
+  font-family: var(--font-body);
+  font-size: 13px;
+  background: var(--c-paper-dim);
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--c-ink);
+  outline: none;
+  transition: border-color var(--tx-fast);
+  width: 100%;
+}
+
+.input:focus,
+.textarea:focus {
+  border-color: var(--c-accent);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 72px;
+}

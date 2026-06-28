@@ -1,0 +1,144 @@
+.item {
+  position: relative;
+  padding: var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-4);
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: background var(--tx-fast);
+  margin: 2px var(--sp-2);
+  border-radius: var(--radius);
+}
+
+/* シグネチャ：積み重なった紙の束を示す影 */
+.stackShadow {
+  position: absolute;
+  inset: 2px 0 -3px 3px;
+  background: var(--c-paper-deep);
+  border-radius: var(--radius);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity var(--tx-fast);
+}
+
+.item:hover .stackShadow {
+  opacity: 0.7;
+}
+
+.itemActive .stackShadow {
+  opacity: 1;
+}
+
+.item:hover {
+  background: var(--c-paper-deep);
+}
+
+.itemActive {
+  background: var(--c-paper-deep);
+  border-left-color: var(--c-accent);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-right: var(--sp-4);
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--c-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+}
+
+.itemActive .title {
+  color: var(--c-ink);
+  font-weight: 500;
+}
+
+.unsavedMark {
+  margin-left: 4px;
+  font-size: 7px;
+  color: var(--c-accent);
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.renameInput {
+  font-size: 13px;
+  font-family: var(--font-body);
+  background: var(--c-paper);
+  border: 1px solid var(--c-accent);
+  border-radius: 2px;
+  padding: 1px 4px;
+  color: var(--c-ink);
+  width: 100%;
+  outline: none;
+}
+
+/* タグ */
+.tags {
+  display: flex;
+  gap: var(--sp-1);
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 10px;
+  padding: 1px 5px;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+/* メタ情報 */
+.meta {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+}
+
+.metaVersion {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-accent);
+}
+
+.metaDate {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-ink-faint);
+}
+
+/* 削除ボタン */
+.deleteBtn {
+  position: absolute;
+  right: var(--sp-2);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  background: none;
+  border: none;
+  border-radius: 2px;
+  color: var(--c-ink-faint);
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--tx-fast), color var(--tx-fast), background var(--tx-fast);
+}
+
+.item:hover .deleteBtn {
+  opacity: 0.6;
+}
+
+.deleteBtn:hover {
+  opacity: 1 !important;
+  color: var(--c-danger);
+  background: rgba(168, 82, 82, 0.1);
+}

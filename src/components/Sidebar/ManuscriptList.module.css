@@ -1,0 +1,94 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4) var(--sp-2);
+  flex-shrink: 0;
+}
+
+.newBtn {
+  font-size: 16px;
+  padding: 0 6px;
+  line-height: 1;
+}
+
+/* ソートバー */
+.sortBar {
+  display: flex;
+  gap: 2px;
+  padding: 0 var(--sp-3) var(--sp-2);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.sortBtn {
+  font-size: 10px;
+  padding: 2px 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  color: var(--c-ink-faint);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all var(--tx-fast);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.sortBtn:hover {
+  background: var(--c-paper-deep);
+  color: var(--c-ink-mid);
+}
+
+.sortBtnActive {
+  color: var(--c-accent) !important;
+  border-color: rgba(196, 149, 106, 0.3) !important;
+}
+
+.sortArrow {
+  font-size: 9px;
+}
+
+/* 一覧 */
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-1) 0 var(--sp-3);
+}
+
+.itemWrapper {
+  position: relative;
+}
+
+/* ドラッグ中のドロップ先表示 */
+.dragOver::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--sp-3);
+  right: var(--sp-3);
+  height: 2px;
+  background: var(--c-accent);
+  border-radius: 1px;
+  z-index: 10;
+}
+
+/* 空状態 */
+.empty {
+  padding: var(--sp-6) var(--sp-4);
+  text-align: center;
+  color: var(--c-ink-faint);
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  align-items: center;
+}

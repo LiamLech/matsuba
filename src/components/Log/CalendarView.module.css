@@ -1,0 +1,355 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* コントロールバー */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-4);
+  border-bottom: var(--border);
+}
+
+.modeSwitcher {
+  display: flex;
+  background: var(--c-paper-deep);
+  border-radius: var(--radius);
+  padding: 2px;
+  gap: 2px;
+}
+
+.modeBtn {
+  padding: 3px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: var(--font-body);
+  color: var(--c-ink-faint);
+  cursor: pointer;
+  transition: all var(--tx-fast);
+}
+
+.modeBtn:hover {
+  color: var(--c-ink-mid);
+  background: var(--c-paper);
+}
+
+.modeBtnActive {
+  background: var(--c-paper) !important;
+  color: var(--c-ink) !important;
+  font-weight: 500;
+}
+
+.navigator {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.periodLabel {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--c-ink);
+  min-width: 140px;
+  text-align: center;
+}
+
+.body {
+  flex: 1;
+}
+
+/* ── 年ビュー ── */
+.yearView {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.yearMonths {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0;
+}
+
+.yearMonth {
+  font-size: 10px;
+  color: var(--c-ink-faint);
+  text-align: center;
+}
+
+.yearGrid {
+  display: grid;
+  grid-template-columns: repeat(53, 12px);
+  grid-auto-rows: 12px;
+  gap: 2px;
+}
+
+.yearCell {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--c-paper-deep);
+}
+
+.level0 { background: var(--c-paper-deep); }
+.level1 { background: rgba(196, 149, 106, 0.2); }
+.level2 { background: rgba(196, 149, 106, 0.45); }
+.level3 { background: rgba(196, 149, 106, 0.7); }
+.level4 { background: var(--c-accent); }
+
+.yearLegend {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  justify-content: flex-end;
+}
+
+.legendLabel {
+  font-size: 10px;
+  color: var(--c-ink-faint);
+}
+
+/* ── 月ビュー ── */
+.monthView {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 11px;
+  color: var(--c-ink-faint);
+  padding: var(--sp-1) 0;
+}
+
+.monthGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.monthCell {
+  min-height: 64px;
+  border-radius: var(--radius);
+  background: var(--c-paper-dim);
+}
+
+.monthCellDay {
+  padding: var(--sp-1);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: background var(--tx-fast);
+}
+
+.monthCellDay:hover {
+  background: var(--c-paper-deep);
+}
+
+.hasLog {
+  background: rgba(196, 149, 106, 0.06) !important;
+}
+
+.selected {
+  background: rgba(196, 149, 106, 0.15) !important;
+  outline: 1px solid var(--c-accent);
+}
+
+.today .dayNum {
+  color: var(--c-accent);
+  font-weight: 600;
+}
+
+.dayNum {
+  font-size: 12px;
+  color: var(--c-ink-mid);
+  font-family: var(--font-mono);
+}
+
+.dayDuration {
+  font-size: 10px;
+  color: var(--c-accent);
+  font-family: var(--font-mono);
+}
+
+/* 日詳細 */
+.dayDetail {
+  border: var(--border);
+  border-radius: 4px;
+  padding: var(--sp-3) var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  background: var(--c-paper-dim);
+}
+
+.dayDetailTitle {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-ink);
+  margin-bottom: var(--sp-1);
+}
+
+.dayDetailSession {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-size: 12px;
+}
+
+.dayDetailTitle2 {
+  font-weight: 500;
+  color: var(--c-ink);
+  min-width: 100px;
+}
+
+.dayDetailTime {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--c-ink-faint);
+}
+
+.dayDetailDuration {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--c-accent);
+  background: rgba(196, 149, 106, 0.1);
+  padding: 1px 6px;
+  border-radius: 2px;
+}
+
+/* ── 週ビュー ── */
+.weekView {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--sp-2);
+}
+
+.weekDay {
+  border: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.weekDayToday {
+  border-color: var(--c-accent);
+}
+
+.weekDayHeader {
+  padding: var(--sp-2) var(--sp-2) var(--sp-1);
+  background: var(--c-paper-dim);
+  border-bottom: var(--border);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.weekDayName {
+  font-size: 11px;
+  color: var(--c-ink-faint);
+}
+
+.weekDayNum {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-ink);
+}
+
+.weekDayNumToday {
+  color: var(--c-accent);
+}
+
+.weekDayTotal {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-accent);
+  margin-left: auto;
+}
+
+.weekSessions {
+  padding: var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-height: 60px;
+}
+
+.weekSession {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: var(--sp-1) var(--sp-2);
+  background: rgba(196, 149, 106, 0.06);
+  border-left: 2px solid var(--c-accent);
+  border-radius: 2px;
+}
+
+.weekSessionTitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--c-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-body);
+  width: 100%;
+  transition: color var(--tx-fast);
+}
+
+.weekSessionTitle:hover {
+  color: var(--c-accent);
+}
+
+.dayDetailTitle2 {
+  font-weight: 500;
+  color: var(--c-ink);
+  min-width: 100px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--font-body);
+  text-align: left;
+  transition: color var(--tx-fast);
+}
+
+.dayDetailTitle2:hover {
+  color: var(--c-accent);
+  text-decoration: underline;
+}
+
+.weekSessionTime {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-ink-faint);
+}
+
+.weekSessionDuration {
+  color: var(--c-accent);
+}
+
+.weekNoSession {
+  font-size: 12px;
+  color: var(--c-ink-faint);
+  text-align: center;
+  padding: var(--sp-2) 0;
+}

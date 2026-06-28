@@ -1,0 +1,96 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.header {
+  margin-bottom: var(--sp-2);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--c-ink);
+  margin-bottom: var(--sp-2);
+}
+
+.desc {
+  font-size: 13px;
+  color: var(--c-ink-faint);
+  line-height: 1.7;
+}
+
+.card {
+  display: flex;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  background: var(--c-paper-dim);
+  border: var(--border);
+  border-radius: 4px;
+  align-items: flex-start;
+}
+
+.cardIcon {
+  font-size: 24px;
+  opacity: 0.3;
+  flex-shrink: 0;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.cardTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-ink-faint);
+}
+
+.cardDesc {
+  font-size: 12px;
+  color: var(--c-ink-faint);
+  line-height: 1.7;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--border);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+
+.sectionTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-ink);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.label {
+  font-size: 12px;
+  color: var(--c-ink-mid);
+}
+
+.input {
+  font-family: var(--font-body);
+  font-size: 13px;
+  background: var(--c-paper-deep);
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--c-ink-faint);
+  cursor: not-allowed;
+  width: 100%;
+}

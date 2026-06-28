@@ -1,0 +1,9 @@
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--c-paper-dim);
+  border-right: var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}

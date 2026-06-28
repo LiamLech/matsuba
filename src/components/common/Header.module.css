@@ -1,0 +1,97 @@
+.header {
+  height: var(--header-h);
+  background: var(--c-paper-dim);
+  border-bottom: var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--sp-4);
+  gap: var(--sp-3);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--c-ink);
+  letter-spacing: 0.06em;
+}
+
+.divider {
+  width: 1px;
+  height: 18px;
+  background: var(--c-paper-deep);
+}
+
+/* ペイン切り替えボタン群 */
+.paneControls {
+  display: flex;
+  gap: 2px;
+  background: var(--c-paper-deep);
+  border-radius: var(--radius);
+  padding: 2px;
+}
+
+.paneBtn {
+  padding: 2px 8px;
+  background: transparent;
+  border: none;
+  border-radius: 2px;
+  color: var(--c-ink-faint);
+  font-size: 11px;
+  cursor: pointer;
+  letter-spacing: 0.08em;
+  transition: background var(--tx-fast), color var(--tx-fast);
+}
+.paneBtn:hover {
+  background: var(--c-paper);
+  color: var(--c-ink-mid);
+}
+.paneBtnActive {
+  background: var(--c-paper) !important;
+  color: var(--c-ink) !important;
+}
+
+.backupBtn {
+  font-size: 12px;
+}
+
+/* 同期スクロールボタン */
+.syncBtn {
+  font-size: 12px;
+}
+.syncBtnActive {
+  color: var(--c-accent) !important;
+}
+
+.spacer {
+  flex: 1;
+}
+
+/* ナビゲーション */
+.nav {
+  display: flex;
+  gap: 2px;
+}
+
+.navBtn {
+  padding: 4px 12px;
+  background: transparent;
+  border: none;
+  border-radius: var(--radius);
+  color: var(--c-ink-faint);
+  font-family: var(--font-body);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background var(--tx-fast), color var(--tx-fast);
+}
+.navBtn:hover {
+  background: var(--c-paper-deep);
+  color: var(--c-ink);
+}
+.navBtnActive {
+  background: var(--c-paper-deep);
+  color: var(--c-ink);
+  font-weight: 500;
+}

@@ -1,0 +1,90 @@
+.container {
+  border-top: var(--border);
+  flex-shrink: 0;
+}
+
+.toggleHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--tx-fast);
+}
+.toggleHeader:hover {
+  background: var(--c-paper-deep);
+}
+
+.arrow {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--c-ink-faint);
+  transition: transform var(--tx-fast);
+}
+.arrowOpen {
+  transform: rotate(180deg);
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  background: var(--c-accent);
+  color: var(--c-paper);
+  border-radius: 10px;
+  padding: 0 5px;
+  min-width: 16px;
+  text-align: center;
+}
+
+.body {
+  padding: 0 var(--sp-3) var(--sp-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.clearBtn {
+  font-size: 11px;
+  align-self: flex-start;
+}
+
+.category {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.categoryLabel {
+  font-size: 10px;
+  color: var(--c-ink-faint);
+  padding: 0 2px;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tagBtn {
+  font-size: 11px;
+  padding: 2px 7px;
+  background: transparent;
+  border: 1px solid var(--c-paper-deep);
+  border-radius: 2px;
+  color: var(--c-ink-faint);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all var(--tx-fast);
+}
+.tagBtn:hover {
+  background: var(--c-paper-deep);
+  color: var(--c-ink-mid);
+}
+.tagBtnSelected {
+  font-weight: 500;
+}

@@ -1,0 +1,26 @@
+.wrapper {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.editor {
+  flex: 1;
+  width: 100%;
+  min-height: 100%;
+  padding: 40px 52px;
+  background: var(--c-paper);
+  color: var(--c-ink);
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+  /* レイアウトプリセットの値はインラインスタイルで上書きされる */
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.editor::placeholder {
+  color: var(--c-ink-faint);
+}

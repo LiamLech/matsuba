@@ -1,0 +1,48 @@
+.view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--c-paper);
+}
+
+/* タブバー */
+.tabs {
+  display: flex;
+  border-bottom: var(--border);
+  background: var(--c-paper-dim);
+  padding: 0 var(--sp-4);
+  gap: 0;
+  flex-shrink: 0;
+}
+
+.tab {
+  padding: var(--sp-3) var(--sp-4);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--c-ink-faint);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--tx-fast);
+  margin-bottom: -1px;
+}
+
+.tab:hover {
+  color: var(--c-ink);
+}
+
+.tabActive {
+  color: var(--c-ink);
+  border-bottom-color: var(--c-accent);
+  font-weight: 500;
+}
+
+/* コンテンツエリア */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-6);
+  max-width: 720px;
+}

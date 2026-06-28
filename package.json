@@ -1,0 +1,43 @@
+{
+  "name": "matsuba",
+  "version": "0.1.0",
+  "private": true,
+  "description": "原稿管理Webアプリ",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext ts,tsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tiptap/core": "^2.4.0",
+    "@tiptap/extension-document": "^2.4.0",
+    "@tiptap/extension-paragraph": "^2.4.0",
+    "@tiptap/extension-text": "^2.4.0",
+    "@tiptap/extension-bold": "^2.4.0",
+    "@tiptap/extension-italic": "^2.4.0",
+    "@tiptap/extension-heading": "^2.4.0",
+    "@tiptap/extension-bullet-list": "^2.4.0",
+    "@tiptap/extension-ordered-list": "^2.4.0",
+    "@tiptap/extension-list-item": "^2.4.0",
+    "@tiptap/extension-history": "^2.4.0",
+    "@tiptap/react": "^2.4.0",
+    "jszip": "^3.10.1",
+    "nanoid": "^5.0.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "typescript": "^5.4.5",
+    "vite": "^5.3.1"
+  }
+}

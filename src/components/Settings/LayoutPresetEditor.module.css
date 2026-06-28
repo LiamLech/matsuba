@@ -1,0 +1,185 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.header {
+  margin-bottom: var(--sp-2);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--c-ink);
+  margin-bottom: var(--sp-2);
+}
+
+.desc {
+  font-size: 13px;
+  color: var(--c-ink-faint);
+  line-height: 1.7;
+}
+
+/* プリセットブロック */
+.presetBlock {
+  border: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.presetRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--c-paper-dim);
+  border-bottom: var(--border);
+}
+
+.presetInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.presetName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-ink);
+}
+
+.builtInBadge {
+  font-size: 10px;
+  color: var(--c-ink-faint);
+  border: var(--border);
+  border-radius: 2px;
+  padding: 1px 5px;
+}
+
+.presetMeta {
+  font-size: 11px;
+  color: var(--c-ink-faint);
+  font-family: var(--font-mono);
+}
+
+.presetActions {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+/* プレビュー */
+.presetPreviewWrap {
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--c-paper);
+}
+
+.preview {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+  color: var(--c-ink);
+  background: var(--c-paper);
+  padding: var(--sp-3);
+  border-radius: var(--radius);
+  border: var(--border);
+  white-space: pre-wrap;
+}
+
+/* 編集フォーム */
+.form {
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  background: var(--c-paper-dim);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.label {
+  font-size: 12px;
+  color: var(--c-ink-mid);
+  font-weight: 500;
+}
+
+.input {
+  font-family: var(--font-body);
+  font-size: 13px;
+  background: var(--c-paper);
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-1) var(--sp-3);
+  color: var(--c-ink);
+  outline: none;
+  transition: border-color var(--tx-fast);
+}
+
+.input:focus {
+  border-color: var(--c-accent);
+}
+
+.range {
+  width: 100%;
+  accent-color: var(--c-accent);
+}
+
+/* セグメントコントロール */
+.segmented {
+  display: flex;
+  background: var(--c-paper-deep);
+  border-radius: var(--radius);
+  padding: 2px;
+  gap: 2px;
+}
+
+.segBtn {
+  flex: 1;
+  padding: 3px 6px;
+  background: transparent;
+  border: none;
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: var(--font-body);
+  color: var(--c-ink-faint);
+  cursor: pointer;
+  transition: all var(--tx-fast);
+}
+
+.segBtn:hover {
+  background: var(--c-paper);
+  color: var(--c-ink-mid);
+}
+
+.segBtnActive {
+  background: var(--c-paper) !important;
+  color: var(--c-ink) !important;
+  font-weight: 500;
+}
+
+.previewSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.previewLabel {
+  font-size: 11px;
+  color: var(--c-ink-faint);
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+}

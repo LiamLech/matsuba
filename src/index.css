@@ -1,0 +1,144 @@
+/* ============================================================
+   matsuba — グローバルスタイル & デザイントークン
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ── カラー ── */
+  --c-paper:      #F7F4EE;   /* 和紙 — メイン背景 */
+  --c-paper-dim:  #EDE9E1;   /* やや暗い和紙 — サイドバー背景 */
+  --c-paper-deep: #E3DDD4;   /* 罫線・区切り */
+  --c-ink:        #1C1917;   /* 墨 — メインテキスト */
+  --c-ink-mid:    #3D3530;   /* 薄墨 — サブテキスト */
+  --c-ink-faint:  #8C7B6E;   /* 薄墨 — プレースホルダ・メタ情報 */
+  --c-accent:     #C4956A;   /* 金茶 — アクセント */
+  --c-accent-dim: #A87A52;   /* 金茶（暗） */
+  --c-danger:     #A85252;   /* 警告赤 */
+  --c-success:    #52875A;   /* 成功緑 */
+
+  /* ── タイポグラフィ ── */
+  --font-display: 'Shippori Mincho', 'Hiragino Mincho ProN', serif;
+  --font-body:    'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+  --font-mono:    'JetBrains Mono', 'Courier New', monospace;
+
+  /* ── スペーシング ── */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+
+  /* ── ボーダー ── */
+  --border: 1px solid var(--c-paper-deep);
+  --radius: 3px;
+
+  /* ── トランジション ── */
+  --tx-fast: 0.12s ease;
+  --tx-base: 0.2s ease;
+
+  /* ── レイアウト寸法 ── */
+  --sidebar-w:      220px;
+  --header-h:       44px;
+  --statusbar-h:    24px;
+}
+
+/* ── リセット ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--c-paper);
+  color: var(--c-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── スクロールバー ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--c-paper-deep);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--c-ink-faint);
+}
+
+/* ── 共通ボタン ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 4px 10px;
+  background: var(--c-paper-dim);
+  border: var(--border);
+  border-radius: var(--radius);
+  color: var(--c-ink-mid);
+  font-family: var(--font-body);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background var(--tx-fast), color var(--tx-fast);
+  white-space: nowrap;
+  user-select: none;
+}
+.btn:hover {
+  background: var(--c-paper-deep);
+  color: var(--c-ink);
+}
+.btn.btn--primary {
+  background: var(--c-accent-dim);
+  border-color: var(--c-accent);
+  color: var(--c-paper);
+}
+.btn.btn--primary:hover {
+  background: var(--c-accent);
+}
+.btn.btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--c-ink-faint);
+}
+.btn.btn--ghost:hover {
+  background: var(--c-paper-deep);
+  color: var(--c-ink);
+}
+.btn.btn--danger:hover {
+  background: rgba(168, 82, 82, 0.1);
+  border-color: var(--c-danger);
+  color: var(--c-danger);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── セクションラベル ── */
+.section-label {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--c-ink-faint);
+}
+
+/* ── フォーカスリング ── */
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}

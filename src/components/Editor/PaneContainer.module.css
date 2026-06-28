@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* 1ペイン */
+.panes1 > * {
+  flex: 1;
+}
+
+/* 2ペイン */
+.panes2 > * {
+  flex: 1;
+  min-width: 280px;
+}
+
+/* 3ペイン */
+.panes3 > * {
+  flex: 1;
+  min-width: 220px;
+}
