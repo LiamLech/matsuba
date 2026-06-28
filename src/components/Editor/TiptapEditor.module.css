@@ -1,0 +1,171 @@
+.wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--c-paper);
+}
+
+.vertical {
+  writing-mode: vertical-rl;
+}
+
+.editorArea {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.editorOuter {
+  height: 100%;
+}
+
+/* Tiptapエディタ本体のスタイル */
+.editorContent {
+  min-height: 100%;
+  padding: 40px 52px;
+  outline: none;
+  font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+  color: var(--c-ink);
+  background: var(--c-paper);
+
+  /* プリセットのCSSカスタムプロパティを適用 */
+  font-size: var(--editor-font-size, 16px);
+  line-height: var(--editor-line-height, 1.9);
+  letter-spacing: var(--editor-letter-spacing, 0.02em);
+  text-align: var(--editor-text-align, left);
+}
+
+/* 段落 */
+.editorContent p {
+  margin-bottom: var(--editor-paragraph-spacing, 1em);
+  text-indent: var(--editor-text-indent, 0);
+}
+
+.editorContent p:last-child {
+  margin-bottom: 0;
+}
+
+/* 見出し */
+.editorContent h1 {
+  font-family: var(--font-display);
+  font-size: 1.6em;
+  font-weight: 600;
+  margin: 1.2em 0 0.6em;
+  color: var(--c-ink);
+  line-height: 1.4;
+}
+
+.editorContent h2 {
+  font-family: var(--font-display);
+  font-size: 1.3em;
+  font-weight: 500;
+  margin: 1em 0 0.5em;
+  color: var(--c-ink);
+  line-height: 1.4;
+}
+
+.editorContent h3 {
+  font-size: 1.1em;
+  font-weight: 500;
+  margin: 0.8em 0 0.4em;
+  color: var(--c-ink-mid);
+  line-height: 1.4;
+}
+
+/* 強調 */
+.editorContent strong {
+  font-weight: 600;
+  color: var(--c-ink);
+}
+
+.editorContent em {
+  font-style: italic;
+  color: var(--c-ink-mid);
+}
+
+.editorContent s {
+  text-decoration: line-through;
+  color: var(--c-ink-faint);
+}
+
+/* リスト */
+.editorContent ul,
+.editorContent ol {
+  padding-left: 1.5em;
+  margin-bottom: var(--editor-paragraph-spacing, 1em);
+}
+
+.editorContent li {
+  margin-bottom: 0.3em;
+}
+
+/* 水平線 */
+.editorContent hr {
+  border: none;
+  border-top: 1px solid var(--c-paper-deep);
+  margin: 1.5em 0;
+}
+
+/* ブロッククォート */
+.editorContent blockquote {
+  border-left: 3px solid var(--c-accent);
+  padding-left: 1em;
+  margin-left: 0;
+  color: var(--c-ink-mid);
+  font-style: italic;
+}
+
+/* コード */
+.editorContent code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--c-paper-deep);
+  padding: 0.1em 0.3em;
+  border-radius: 2px;
+}
+
+.editorContent pre {
+  background: var(--c-paper-deep);
+  padding: 1em;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.editorContent pre code {
+  background: none;
+  padding: 0;
+}
+
+/* プレースホルダー */
+.editorContent.is-editor-empty:first-child::before {
+  content: 'ここに原稿を入力…';
+  color: var(--c-ink-faint);
+  pointer-events: none;
+  float: left;
+  height: 0;
+}
+
+/* ルビ */
+.editorContent ruby {
+  ruby-align: center;
+}
+
+.editorContent ruby rt {
+  font-size: 0.5em;
+  color: var(--c-ink-faint);
+}
+
+/* モノルビ */
+.editorContent ruby[data-ruby-type="mono"] {
+  ruby-align: space-between;
+}
+
+.editorContent ruby[data-ruby-type="mono"] rt {
+  text-align: center;
+}
+
+/* フォーカスリングを無効化（独自スタイルで管理） */
+.editorOuter:focus-within {
+  outline: none;
+}

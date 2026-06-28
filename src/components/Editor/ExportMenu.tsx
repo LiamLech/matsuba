@@ -6,6 +6,8 @@ import React, { useState, useRef, useEffect } from 'react'
 import type { Manuscript, Version } from '../../types'
 import { useExport } from '../../hooks/useExport'
 import { useBackup } from '../../hooks/useBackup'
+import { usePrint } from '../../hooks/usePrint'
+import { useLayoutStore } from '../../store/layoutStore'
 import styles from './ExportMenu.module.css'
 
 type ExportMenuProps = {
@@ -21,6 +23,14 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ manuscript, currentVersi
   const menuRef = useRef<HTMLDivElement>(null)
   const { exportFile } = useExport()
   const { exportOneAsZip } = useBackup()
+  const { printManuscript } = usePrint()
+  const presets = useLayoutStore((s) => s.presets)
+
+  const preset = presets.find((p) => p.id === manuscript.layoutId) ?? {
+    id: 'prose', label: '散文', isBuiltIn: true,
+    lineHeight: 1.9, fontSize: 16, indent: 'none' as const,
+    alignment: 'left' as const, letterSpacing: 0.02, paragraphSpacing: 1,
+  }
 
   // メニュー外クリックで閉じる
   useEffect(() => {
@@ -52,6 +62,11 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ manuscript, currentVersi
     setIsOpen(false)
   }
 
+  const handlePdf = () => {
+    printManuscript({ manuscript, version: currentVersion, preset })
+    setIsOpen(false)
+  }
+
   const handleZip = async () => {
     await exportOneAsZip(manuscript)
     setIsOpen(false)
@@ -78,14 +93,12 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ manuscript, currentVersi
             right: `${menuPos.right}px`,
           }}
         >
-          {/* 対象バージョンの表示 */}
           <div className={styles.target}>
             対象：{currentVersion ? currentVersion.label : '現在の版'}
           </div>
 
           <div className={styles.divider} />
 
-          {/* 単体ファイル書き出し */}
           <div className={styles.sectionLabel}>単体ファイル</div>
 
           <button className={styles.menuItem} onClick={() => handle('txt')}>
@@ -100,25 +113,20 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ manuscript, currentVersi
             <span className={styles.menuIcon}>M</span>
             <span className={styles.menuLabel}>
               <span className={styles.menuTitle}>Markdown (.md)</span>
-              <span className={styles.menuDesc}>Markdown形式で書き出し</span>
+              <span className={styles.menuDesc}>書式付きで書き出し</span>
             </span>
           </button>
 
-          <button
-            className={`${styles.menuItem} ${styles.menuItemDisabled}`}
-            disabled
-            title="Phase 2で実装予定"
-          >
+          <button className={styles.menuItem} onClick={handlePdf}>
             <span className={styles.menuIcon}>P</span>
             <span className={styles.menuLabel}>
               <span className={styles.menuTitle}>PDF (.pdf)</span>
-              <span className={styles.menuDesc}>Phase 2で実装予定</span>
+              <span className={styles.menuDesc}>印刷ダイアログからPDF保存</span>
             </span>
           </button>
 
           <div className={styles.divider} />
 
-          {/* バックアップ */}
           <div className={styles.sectionLabel}>バックアップ</div>
 
           <button className={styles.menuItem} onClick={handleZip}>
@@ -131,7 +139,6 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({ manuscript, currentVersi
 
           <div className={styles.divider} />
 
-          {/* オプション */}
           <label className={styles.option}>
             <input
               type="checkbox"

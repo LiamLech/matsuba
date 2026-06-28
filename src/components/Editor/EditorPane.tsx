@@ -8,10 +8,12 @@ import { useManuscriptStore } from '../../store/manuscriptStore'
 import { useLayoutStore } from '../../store/layoutStore'
 import { useUIStore } from '../../store/uiStore'
 import { PaneHeader } from './PaneHeader'
-import { SimpleEditor } from './SimpleEditor'
+import { TiptapEditor } from './TiptapEditor'
 import { VersionPanel } from './VersionPanel'
 import { ExportMenu } from './ExportMenu'
 import { ManuscriptDetailPanel } from './ManuscriptDetailPanel'
+import { AttachmentPanel } from './AttachmentPanel'
+import { AttachmentPane } from './AttachmentPane'
 import { CharCount } from '../common/CharCount'
 import styles from './EditorPane.module.css'
 
@@ -48,8 +50,10 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
   const [charCount, setCharCount] = useState(0)
   const [showVersionPanel, setShowVersionPanel] = useState(true)
   const [showDetailPanel, setShowDetailPanel] = useState(false)
+  const [showAttachmentPanel, setShowAttachmentPanel] = useState(false)
 
-  const isReadOnly = versionId !== null
+  const isAttachments = versionId === 'attachments'
+  const isReadOnly = versionId !== null && !isAttachments
 
   const handleClose = useCallback(() => {
     const newCount = Math.max(1, paneCount - 1) as 1 | 2 | 3
@@ -81,8 +85,8 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
   }
 
   const displayContent = isReadOnly
-    ? (manuscript.versions.find((v) => v.id === versionId)?.content as string ?? '')
-    : manuscript.currentContent ?? ''
+    ? (manuscript.versions.find((v) => v.id === versionId)?.contentText ?? '')
+    : manuscript.currentContentText ?? ''
 
   return (
     <div className={styles.pane} onMouseDown={handleFocus}>
@@ -95,7 +99,12 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
       />
 
       <div className={styles.body}>
-        <div className={styles.editorArea}>
+        {isAttachments ? (
+          /* 参考画像ペイン */
+          <AttachmentPane manuscriptId={manuscriptId} />
+        ) : (
+          <>
+            <div className={styles.editorArea}>
           {isReadOnly ? (
             <div
               className={styles.readOnlyWrapper}
@@ -115,7 +124,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
               </div>
             </div>
           ) : (
-            <SimpleEditor
+            <TiptapEditor
               manuscriptId={manuscriptId}
               preset={preset}
               direction={manuscript.direction}
@@ -126,7 +135,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
           )}
         </div>
 
-        {!isReadOnly && showVersionPanel && (
+        {!isReadOnly && !isAttachments && showVersionPanel && (
           <VersionPanel
             manuscriptId={manuscriptId}
             currentVersionId={versionId}
@@ -134,46 +143,64 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
           />
         )}
 
-        {showDetailPanel && (
+        {!isAttachments && showDetailPanel && (
           <ManuscriptDetailPanel
             manuscriptId={manuscriptId}
             onClose={() => setShowDetailPanel(false)}
           />
         )}
+
+        {!isAttachments && showAttachmentPanel && (
+          <AttachmentPanel
+            manuscriptId={manuscriptId}
+            onClose={() => setShowAttachmentPanel(false)}
+          />
+        )}
+          </>
+        )}
       </div>
 
-      <div className={styles.statusBar}>
-        <span className={styles.presetLabel}>{preset.label}</span>
-        {manuscript.direction === 'vertical' && (
-          <span className={styles.directionLabel}>縦書き</span>
-        )}
-        <div className={styles.spacer} />
-        {!isReadOnly && <CharCount count={charCount} />}
-        <ExportMenu
-          manuscript={manuscript}
-          currentVersion={
-            isReadOnly
-              ? manuscript.versions.find((v) => v.id === versionId) ?? null
-              : null
-          }
-        />
-        {!isReadOnly && (
+      {!isAttachments && (
+        <div className={styles.statusBar}>
+          <span className={styles.presetLabel}>{preset.label}</span>
+          {manuscript.direction === 'vertical' && (
+            <span className={styles.directionLabel}>縦書き</span>
+          )}
+          <div className={styles.spacer} />
+          {!isReadOnly && <CharCount count={charCount} />}
+          <ExportMenu
+            manuscript={manuscript}
+            currentVersion={
+              isReadOnly
+                ? manuscript.versions.find((v) => v.id === versionId) ?? null
+                : null
+            }
+          />
+          {!isReadOnly && (
+            <button
+              className={`btn btn--ghost ${styles.toggleVersionBtn}`}
+              onClick={() => setShowVersionPanel((v) => !v)}
+              title="バージョン履歴"
+            >
+              {showVersionPanel ? '履歴 ▸' : '履歴 ◂'}
+            </button>
+          )}
           <button
-            className={`btn btn--ghost ${styles.toggleVersionBtn}`}
-            onClick={() => setShowVersionPanel((v) => !v)}
-            title="バージョン履歴"
+            className={`btn btn--ghost ${styles.toggleVersionBtn} ${showAttachmentPanel ? styles.activePanelBtn : ''}`}
+            onClick={() => setShowAttachmentPanel((v) => !v)}
+            title="参考画像"
           >
-            {showVersionPanel ? '履歴 ▸' : '履歴 ◂'}
+            🖼
           </button>
-        )}
-        <button
-          className={`btn btn--ghost ${styles.toggleVersionBtn} ${showDetailPanel ? styles.activePanelBtn : ''}`}
-          onClick={() => setShowDetailPanel((v) => !v)}
-          title="原稿の設定"
-        >
-          設定 ⚙
-        </button>
-      </div>
+          <button
+            className={`btn btn--ghost ${styles.toggleVersionBtn} ${showDetailPanel ? styles.activePanelBtn : ''}`}
+            onClick={() => setShowDetailPanel((v) => !v)}
+            title="原稿の設定"
+          >
+            設定 ⚙
+          </button>
+        </div>
+      )}
     </div>
   )
 }

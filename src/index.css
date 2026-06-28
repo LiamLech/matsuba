@@ -142,3 +142,13 @@ body {
   outline: 2px solid var(--c-accent);
   outline-offset: 2px;
 }
+
+/* ── ルビ表示 ── */
+ruby {
+  ruby-align: center;
+}
+
+ruby rt {
+  font-size: 0.5em;
+}
+

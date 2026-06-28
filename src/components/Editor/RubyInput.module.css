@@ -1,0 +1,91 @@
+.preview {
+  text-align: center;
+  padding: var(--sp-4) var(--sp-3);
+  background: var(--c-paper-dim);
+  border: var(--border);
+  border-radius: var(--radius);
+  font-size: 20px;
+  font-family: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', sans-serif;
+  color: var(--c-ink);
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview ruby {
+  ruby-align: center;
+}
+
+.preview rt {
+  font-size: 10px;
+  color: var(--c-ink-faint);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-ink-mid);
+}
+
+.input {
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--c-paper-dim);
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--c-ink);
+  outline: none;
+  transition: border-color var(--tx-fast);
+  width: 100%;
+}
+
+.input:focus {
+  border-color: var(--c-accent);
+}
+
+.segmented {
+  display: flex;
+  background: var(--c-paper-deep);
+  border-radius: var(--radius);
+  padding: 2px;
+  gap: 2px;
+}
+
+.segBtn {
+  flex: 1;
+  padding: 5px 8px;
+  background: transparent;
+  border: none;
+  border-radius: 2px;
+  font-size: 12px;
+  font-family: var(--font-body);
+  color: var(--c-ink-faint);
+  cursor: pointer;
+  transition: all var(--tx-fast);
+}
+
+.segBtn:hover {
+  background: var(--c-paper);
+  color: var(--c-ink-mid);
+}
+
+.segBtnActive {
+  background: var(--c-paper) !important;
+  color: var(--c-ink) !important;
+  font-weight: 500;
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--c-ink-faint);
+  font-family: var(--font-mono);
+  text-align: center;
+}

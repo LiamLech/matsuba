@@ -13,14 +13,15 @@ const PresetPreview: React.FC<{ preset: LayoutPreset }> = ({ preset }) => (
   <div
     className={styles.preview}
     style={{
-      lineHeight: preset.lineHeight,
-      fontSize: Math.min(preset.fontSize, 14), // プレビューは最大14px
-      letterSpacing: `${preset.letterSpacing}em`,
-      textAlign: preset.alignment,
-      textIndent: preset.indent === 'none' ? undefined : preset.indent,
-    }}
+      '--editor-font-size':         `${Math.min(preset.fontSize, 14)}px`,
+      '--editor-line-height':       String(preset.lineHeight),
+      '--editor-letter-spacing':    `${preset.letterSpacing}em`,
+      '--editor-text-indent':       preset.indent === 'none' ? '0' : preset.indent,
+      '--editor-text-align':        preset.alignment,
+      '--editor-paragraph-spacing': `${preset.paragraphSpacing}em`,
+    } as React.CSSProperties}
   >
-    春はあけぼの。やうやう白くなりゆく山際、少し明りて、紫だちたる雲の細くたなびきたる。
+    <p>春はあけぼの。やうやう白くなりゆく山際、少し明りて、紫だちたる雲の細くたなびきたる。</p>
   </div>
 )
 

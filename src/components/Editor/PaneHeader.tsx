@@ -3,7 +3,7 @@
 // ============================================================
 
 import React from 'react'
-import type { ManuscriptId, VersionId, PaneIndex } from '../../types'
+import type { ManuscriptId, VersionId, PaneIndex, PaneMode } from '../../types'
 import { useManuscriptStore } from '../../store/manuscriptStore'
 import { useUIStore } from '../../store/uiStore'
 import styles from './PaneHeader.module.css'
@@ -11,7 +11,7 @@ import styles from './PaneHeader.module.css'
 type PaneHeaderProps = {
   paneIndex: PaneIndex
   manuscriptId: ManuscriptId | null
-  versionId: VersionId | null
+  versionId: PaneMode
   onClose: () => void
   canClose: boolean
 }
@@ -29,7 +29,8 @@ export const PaneHeader: React.FC<PaneHeaderProps> = ({
 
   const currentManuscript = manuscripts.find((m) => m.id === manuscriptId) ?? null
   const versions = currentManuscript?.versions ?? []
-  const isReadOnly = versionId !== null
+  const isReadOnly = versionId !== null && versionId !== 'attachments'
+  const isAttachments = versionId === 'attachments'
 
   const handleManuscriptChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.value as ManuscriptId
@@ -38,11 +39,17 @@ export const PaneHeader: React.FC<PaneHeaderProps> = ({
 
   const handleVersionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value
-    setPaneVersion(paneIndex, val === 'current' ? null : val as VersionId)
+    if (val === 'current') {
+      setPaneVersion(paneIndex, null)
+    } else if (val === 'attachments') {
+      setPaneVersion(paneIndex, 'attachments')
+    } else {
+      setPaneVersion(paneIndex, val as VersionId)
+    }
   }
 
   return (
-    <div className={`${styles.header} ${isReadOnly ? styles.headerReadOnly : ''}`}>
+    <div className={`${styles.header} ${isReadOnly ? styles.headerReadOnly : ''} ${isAttachments ? styles.headerAttachments : ''}`}>
       {/* 原稿選択 */}
       <select
         className={styles.select}
@@ -58,7 +65,7 @@ export const PaneHeader: React.FC<PaneHeaderProps> = ({
         ))}
       </select>
 
-      {/* バージョン選択（原稿が選択されているとき） */}
+      {/* バージョン・モード選択（原稿が選択されているとき） */}
       {currentManuscript && (
         <>
           <span className={styles.sep}>›</span>
@@ -66,7 +73,7 @@ export const PaneHeader: React.FC<PaneHeaderProps> = ({
             className={styles.select}
             value={versionId ?? 'current'}
             onChange={handleVersionChange}
-            aria-label="バージョンを選択"
+            aria-label="表示モードを選択"
           >
             <option value="current">現在の版（編集中）</option>
             {[...versions].reverse().map((v) => (
@@ -74,18 +81,21 @@ export const PaneHeader: React.FC<PaneHeaderProps> = ({
                 {v.label}
               </option>
             ))}
+            <option value="attachments">🖼 参考画像</option>
           </select>
         </>
       )}
 
-      {/* 読み取り専用バッジ */}
+      {/* バッジ */}
       {isReadOnly && (
         <span className={styles.readOnlyBadge}>読み取り専用</span>
+      )}
+      {isAttachments && (
+        <span className={styles.attachmentsBadge}>参考画像</span>
       )}
 
       <div className={styles.spacer} />
 
-      {/* 閉じるボタン */}
       {canClose && (
         <button
           className={`btn btn--ghost ${styles.closeBtn}`}

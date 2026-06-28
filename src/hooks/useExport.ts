@@ -1,46 +1,18 @@
 // ============================================================
-// matsuba - エクスポートフック
+// matsuba - エクスポートフック（Phase 2更新）
 // ============================================================
 
 import { useCallback } from 'react'
 import type { Manuscript, Version, ExportFormat } from '../types'
+import { buildFrontmatter } from '../utils/tiptapToMarkdown'
 
-/**
- * ファイル名に使えない文字を除去し、最大文字数に収める
- */
 function sanitizeFilename(title: string, maxLength = 20): string {
-  return title
-    .replace(/[\\/:*?"<>|]/g, '_')
-    .trim()
-    .slice(0, maxLength) || 'untitled'
+  return title.replace(/[\\/:*?"<>|]/g, '_').trim().slice(0, maxLength) || 'untitled'
 }
 
-/**
- * エクスポート対象のテキストを取得する。
- * Phase 1: currentContent（プレーンテキスト）を使用。
- * Phase 2: TiptapのJSON→テキスト変換に置き換える。
- */
-function resolveContent(manuscript: Manuscript, version: Version | null): string {
-  if (version) {
-    // バージョンのcontentはPhase 1ではプレーンテキスト
-    return typeof version.content === 'string' ? version.content : ''
-  }
-  return manuscript.currentContent ?? ''
-}
-
-/**
- * Markdownのメタデータブロックを生成する
- */
-function buildFrontmatter(manuscript: Manuscript, version: Version | null): string {
-  const lines = [
-    '---',
-    `title: ${manuscript.title}`,
-    version ? `version: ${version.label}` : 'version: 現在の版',
-    `date: ${new Date().toISOString().slice(0, 10)}`,
-    '---',
-    '',
-  ]
-  return lines.join('\n')
+function resolveContentText(manuscript: Manuscript, version: Version | null): string {
+  if (version) return version.contentText ?? ''
+  return manuscript.currentContentText ?? ''
 }
 
 export function useExport() {
@@ -52,32 +24,42 @@ export function useExport() {
       includeMetadata = false
     ) => {
       const safeTitle = sanitizeFilename(manuscript.title)
-      const content = resolveContent(manuscript, version)
+      const contentText = resolveContentText(manuscript, version)
+      const versionSuffix = version ? `_${version.label}` : ''
 
       let text = ''
       let mimeType = 'text/plain;charset=utf-8'
       let filename = ''
 
-      const versionSuffix = version ? `_${version.label}` : ''
-
       switch (format) {
         case 'txt':
-          text = content
+          // txtはプレーンテキスト（Markdownの記号なし）
+          // contentTextはMarkdown形式のため、記号を除去する
+          text = contentText
+            .replace(/^#{1,6}\s+/gm, '')    // 見出し記号を除去
+            .replace(/\*\*(.*?)\*\*/g, '$1') // 太字を除去
+            .replace(/\*(.*?)\*/g, '$1')     // イタリックを除去
+            .replace(/~~(.*?)~~/g, '$1')     // 取り消し線を除去
+            .replace(/`(.*?)`/g, '$1')       // インラインコードを除去
+            .replace(/^[-*]\s+/gm, '')       // リストマーカーを除去
+            .replace(/^\d+\.\s+/gm, '')      // 番号付きリストを除去
+            .replace(/^>\s+/gm, '')          // 引用を除去
+            .replace(/---/g, '')             // 水平線を除去
           mimeType = 'text/plain;charset=utf-8'
           filename = `${safeTitle}${versionSuffix}.txt`
           break
 
         case 'md':
+          // mdはMarkdown形式（contentTextをそのまま使用）
           text = includeMetadata
-            ? buildFrontmatter(manuscript, version) + content
-            : content
+            ? buildFrontmatter(manuscript.title, version?.label) + '\n' + contentText
+            : contentText
           mimeType = 'text/markdown;charset=utf-8'
           filename = `${safeTitle}${versionSuffix}.md`
           break
 
         case 'pdf':
-          // Phase 2で実装
-          window.alert('PDF出力はPhase 2で実装予定です。')
+          window.alert('PDF出力はPhase 2 Step 4で実装予定です。')
           return
       }
 

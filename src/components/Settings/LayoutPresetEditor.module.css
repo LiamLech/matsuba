@@ -83,7 +83,20 @@
   padding: var(--sp-3);
   border-radius: var(--radius);
   border: var(--border);
-  white-space: pre-wrap;
+  /* CSSカスタムプロパティでプリセット値を受け取る */
+  font-size: var(--editor-font-size, 14px);
+  line-height: var(--editor-line-height, 1.9);
+  letter-spacing: var(--editor-letter-spacing, 0.02em);
+  text-align: var(--editor-text-align, left);
+}
+
+.preview p {
+  text-indent: var(--editor-text-indent, 0);
+  margin-bottom: var(--editor-paragraph-spacing, 1em);
+}
+
+.preview p:last-child {
+  margin-bottom: 0;
 }
 
 /* 編集フォーム */

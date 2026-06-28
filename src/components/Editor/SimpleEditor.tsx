@@ -30,7 +30,7 @@ export const SimpleEditor: React.FC<SimpleEditorProps> = ({
   const updateManuscript = useManuscriptStore((s) => s.updateManuscript)
 
   const manuscript = getById(manuscriptId)
-  const savedContent = manuscript?.currentContent ?? ''
+  const savedContent = manuscript?.currentContentText ?? ''
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -48,7 +48,7 @@ export const SimpleEditor: React.FC<SimpleEditorProps> = ({
   const scheduleSave = useCallback((text: string) => {
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
     saveTimerRef.current = setTimeout(() => {
-      updateManuscript(manuscriptId, { currentContent: text })
+      updateManuscript(manuscriptId, { currentContent: text, currentContentText: text })
     }, 500)
   }, [manuscriptId, updateManuscript])
 
@@ -70,7 +70,7 @@ export const SimpleEditor: React.FC<SimpleEditorProps> = ({
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
       if (textareaRef.current) {
-        updateManuscript(manuscriptId, { currentContent: textareaRef.current.value })
+        updateManuscript(manuscriptId, { currentContent: textareaRef.current.value, currentContentText: textareaRef.current.value })
       }
     }
   }, [manuscriptId, updateManuscript])

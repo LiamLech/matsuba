@@ -35,6 +35,18 @@
   font-size: 12px;
 }
 
+.headerAttachments {
+  background: var(--c-paper-dim);
+}
+
+.attachmentsBadge {
+  font-size: 10px;
+  color: var(--c-accent-dim);
+  border: 1px solid rgba(196, 149, 106, 0.3);
+  border-radius: 2px;
+  padding: 1px 6px;
+}
+
 .readOnlyBadge {
   font-size: 10px;
   color: var(--c-ink-faint);

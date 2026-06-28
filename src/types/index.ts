@@ -90,6 +90,8 @@ export type Version = {
   label: string
   /** Tiptap JSON形式のコンテンツ */
   content: TiptapJSON
+  /** プレーンテキスト（エクスポート・検索用） */
+  contentText: string
   savedAt: Timestamp
   /** 任意メモ */
   note: string
@@ -134,8 +136,10 @@ export type Manuscript = {
   attachments: Attachment[]
   versions: Version[]
   logs: EditLog[]
-  /** 現在編集中のコンテンツ（バージョン保存前の作業内容） */
-  currentContent: string
+  /** 現在編集中のTiptap JSONコンテンツ */
+  currentContent: TiptapJSON
+  /** 現在編集中のプレーンテキスト（エクスポート・検索用） */
+  currentContentText: string
 }
 
 // ------------------------------------------------------------
@@ -144,10 +148,13 @@ export type Manuscript = {
 
 export type ViewMode = 'editor' | 'log' | 'settings'
 
+/** 'attachments' のとき参考画像ペインとして表示 */
+export type PaneMode = VersionId | 'attachments' | null
+
 export type PaneState = {
   manuscriptId: ManuscriptId | null
-  /** nullなら現在編集中の最新版 */
-  versionId: VersionId | null
+  /** nullなら現在編集中の最新版、'attachments'なら参考画像ペイン */
+  versionId: PaneMode
 }
 
 export type PaneCount = 1 | 2 | 3

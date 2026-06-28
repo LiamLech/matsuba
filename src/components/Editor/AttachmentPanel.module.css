@@ -1,0 +1,174 @@
+.panel {
+  width: 200px;
+  background: var(--c-paper-dim);
+  border-left: var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-3) var(--sp-3) var(--sp-2);
+  border-bottom: var(--border);
+  flex-shrink: 0;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* 空状態 */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-6) var(--sp-3);
+  color: var(--c-ink-faint);
+  font-size: 12px;
+  text-align: center;
+}
+
+.emptyIcon {
+  font-size: 28px;
+  opacity: 0.3;
+}
+
+/* 画像アイテム */
+.item {
+  position: relative;
+  background: var(--c-paper);
+  border: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+/* サムネイル */
+.thumbnail {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--c-paper-deep);
+}
+
+.thumbnailImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity var(--tx-fast);
+}
+
+.thumbnailOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 25, 23, 0.4);
+  color: var(--c-paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity var(--tx-fast);
+}
+
+.thumbnail:hover .thumbnailOverlay {
+  opacity: 1;
+}
+
+.thumbnail:hover .thumbnailImg {
+  opacity: 0.8;
+}
+
+/* 情報 */
+.itemInfo {
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-2);
+  padding-right: var(--sp-5);
+}
+
+.fileName {
+  font-size: 11px;
+  color: var(--c-ink-mid);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 3px;
+}
+
+/* メモ */
+.note {
+  font-size: 11px;
+  color: var(--c-ink-faint);
+  cursor: pointer;
+  min-height: 16px;
+  line-height: 1.4;
+}
+
+.note:hover {
+  color: var(--c-ink-mid);
+}
+
+.notePlaceholder {
+  font-style: italic;
+  opacity: 0.5;
+}
+
+.noteEdit {
+  margin-top: 2px;
+}
+
+.noteInput {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 11px;
+  background: var(--c-paper-dim);
+  border: 1px solid var(--c-accent);
+  border-radius: 2px;
+  padding: 2px 4px;
+  color: var(--c-ink);
+  outline: none;
+}
+
+/* 削除ボタン */
+.deleteBtn {
+  position: absolute;
+  top: var(--sp-1);
+  right: var(--sp-1);
+  width: 20px;
+  height: 20px;
+  background: rgba(28, 25, 23, 0.5);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--tx-fast), background var(--tx-fast);
+}
+
+.item:hover .deleteBtn {
+  opacity: 1;
+}
+
+.deleteBtn:hover {
+  background: var(--c-danger);
+}

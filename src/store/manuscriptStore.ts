@@ -11,6 +11,8 @@ import type {
   VersionId,
   EditLog,
   SortConfig,
+  Attachment,
+  AttachmentId,
 } from '../types'
 import {
   getAllManuscripts,
@@ -87,6 +89,11 @@ type ManuscriptStore = {
   // 執筆ログ
   appendLog: (manuscriptId: ManuscriptId, log: Omit<EditLog, 'id'>) => Promise<void>
 
+  // 参考画像
+  addAttachment: (manuscriptId: ManuscriptId, attachment: Omit<Attachment, 'id' | 'manuscriptId' | 'addedAt'>) => Promise<void>
+  removeAttachment: (manuscriptId: ManuscriptId, attachmentId: AttachmentId) => Promise<void>
+  updateAttachmentNote: (manuscriptId: ManuscriptId, attachmentId: AttachmentId, note: string) => Promise<void>
+
   // セレクター
   getSorted: () => Manuscript[]
   getById: (id: ManuscriptId) => Manuscript | undefined
@@ -131,7 +138,8 @@ export const useManuscriptStore = create<ManuscriptStore>((set, get) => ({
       attachments: [],
       versions: [],
       logs: [],
-      currentContent: '',
+      currentContent: null,
+      currentContentText: '',
     }
     await putManuscript(manuscript)
     set({ manuscripts: [...manuscripts, manuscript] })
@@ -194,15 +202,17 @@ export const useManuscriptStore = create<ManuscriptStore>((set, get) => ({
     const manuscript = manuscripts.find((m) => m.id === manuscriptId)
     if (!manuscript) throw new Error(`原稿が見つかりません: ${manuscriptId}`)
 
-    const content = manuscript.currentContent ?? ''
+    const content = manuscript.currentContent
+    const contentText = manuscript.currentContentText ?? ''
 
     const version: Version = {
       id: nanoid(),
       label: label ?? nextVersionLabel(manuscript.versions),
       content,
+      contentText,
       savedAt: Math.floor(Date.now() / 1000),
       note,
-      charCount: content.replace(/\s/g, '').length,
+      charCount: contentText.replace(/\s/g, '').length,
     }
 
     const updated: Manuscript = {
@@ -252,6 +262,55 @@ export const useManuscriptStore = create<ManuscriptStore>((set, get) => ({
     set({
       manuscripts: manuscripts.map((m) => (m.id === manuscriptId ? updated : m)),
     })
+  },
+
+  // ── 参考画像 ────────────────────────────────────────────
+
+  addAttachment: async (manuscriptId, attachment) => {
+    const { manuscripts } = get()
+    const manuscript = manuscripts.find((m) => m.id === manuscriptId)
+    if (!manuscript) return
+
+    const newAttachment: Attachment = {
+      id: nanoid(),
+      manuscriptId,
+      addedAt: Math.floor(Date.now() / 1000),
+      ...attachment,
+    }
+    const updated: Manuscript = {
+      ...manuscript,
+      attachments: [...(manuscript.attachments ?? []), newAttachment],
+    }
+    await putManuscript(updated)
+    set({ manuscripts: manuscripts.map((m) => (m.id === manuscriptId ? updated : m)) })
+  },
+
+  removeAttachment: async (manuscriptId, attachmentId) => {
+    const { manuscripts } = get()
+    const manuscript = manuscripts.find((m) => m.id === manuscriptId)
+    if (!manuscript) return
+
+    const updated: Manuscript = {
+      ...manuscript,
+      attachments: (manuscript.attachments ?? []).filter((a) => a.id !== attachmentId),
+    }
+    await putManuscript(updated)
+    set({ manuscripts: manuscripts.map((m) => (m.id === manuscriptId ? updated : m)) })
+  },
+
+  updateAttachmentNote: async (manuscriptId, attachmentId, note) => {
+    const { manuscripts } = get()
+    const manuscript = manuscripts.find((m) => m.id === manuscriptId)
+    if (!manuscript) return
+
+    const updated: Manuscript = {
+      ...manuscript,
+      attachments: (manuscript.attachments ?? []).map((a) =>
+        a.id === attachmentId ? { ...a, note } : a
+      ),
+    }
+    await putManuscript(updated)
+    set({ manuscripts: manuscripts.map((m) => (m.id === manuscriptId ? updated : m)) })
   },
 
   // ── セレクター ───────────────────────────────────────────

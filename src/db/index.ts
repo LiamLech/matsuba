@@ -11,7 +11,7 @@ import type {
 } from '../types'
 
 const DB_NAME = 'matsuba'
-const DB_VERSION = 2
+const DB_VERSION = 3
 
 // ストア名
 const STORE_MANUSCRIPTS = 'manuscripts'

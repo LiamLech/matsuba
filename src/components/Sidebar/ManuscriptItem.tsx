@@ -35,12 +35,12 @@ function formatDate(ts: number): string {
  * = バージョン未保存の編集がある状態
  */
 function hasUnsavedChanges(manuscript: Manuscript): boolean {
-  const current = manuscript.currentContent ?? ''
+  const current = manuscript.currentContentText ?? ''
   if (manuscript.versions.length === 0) {
     return current.length > 0
   }
   const lastVersion = manuscript.versions[manuscript.versions.length - 1]
-  return current !== (lastVersion.content as string ?? '')
+  return current !== (lastVersion.contentText ?? '')
 }
 
 export const ManuscriptItem: React.FC<ManuscriptItemProps> = ({
@@ -108,6 +108,26 @@ export const ManuscriptItem: React.FC<ManuscriptItemProps> = ({
       <div className={styles.stackShadow} aria-hidden />
 
       <div className={styles.inner}>
+        {/* サムネイル（参考画像がある場合） */}
+        {manuscript.attachments && manuscript.attachments.length > 0 && (
+          <div className={styles.thumbnails}>
+            {manuscript.attachments.slice(0, 3).map((attachment) => (
+              <img
+                key={attachment.id}
+                src={attachment.dataUrl}
+                alt={attachment.fileName}
+                className={styles.thumbnail}
+                title={attachment.fileName}
+              />
+            ))}
+            {manuscript.attachments.length > 3 && (
+              <div className={styles.thumbnailMore}>
+                +{manuscript.attachments.length - 3}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* タイトル */}
         {isRenaming ? (
           <input

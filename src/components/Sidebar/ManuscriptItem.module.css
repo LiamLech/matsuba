@@ -58,6 +58,35 @@
   font-weight: 500;
 }
 
+/* サムネイル */
+.thumbnails {
+  display: flex;
+  gap: 3px;
+  margin-bottom: var(--sp-1);
+}
+
+.thumbnail {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 2px;
+  border: 1px solid var(--c-paper-deep);
+}
+
+.thumbnailMore {
+  width: 36px;
+  height: 36px;
+  border-radius: 2px;
+  background: var(--c-paper-deep);
+  border: 1px solid var(--c-paper-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--c-ink-faint);
+  font-family: var(--font-mono);
+}
+
 .unsavedMark {
   margin-left: 4px;
   font-size: 7px;
