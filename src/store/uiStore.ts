@@ -30,10 +30,19 @@ type UIStore = UIState & {
   // 文字数表示
   setCharCountVisible: (visible: boolean) => void
   toggleCharCount: () => void
+
+  // モバイル用サイドバー
+  isSidebarOpen: boolean
+  setSidebarOpen: (open: boolean) => void
+  toggleSidebar: () => void
 }
 
 export const useUIStore = create<UIStore>((set, get) => ({
   ...DEFAULT_UI_STATE,
+  isSidebarOpen: false,
+
+  setSidebarOpen: (open) => set({ isSidebarOpen: open }),
+  toggleSidebar: () => set((s) => ({ isSidebarOpen: !s.isSidebarOpen })),
 
   // ── ペイン操作 ───────────────────────────────────────────
 

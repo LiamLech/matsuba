@@ -18,9 +18,10 @@ const SORT_OPTIONS: { key: SortKey; label: string }[] = [
 
 type ManuscriptListProps = {
   filterTagIds: TagId[]
+  onManuscriptSelect?: () => void
 }
 
-export const ManuscriptList: React.FC<ManuscriptListProps> = ({ filterTagIds }) => {
+export const ManuscriptList: React.FC<ManuscriptListProps> = ({ filterTagIds, onManuscriptSelect }) => {
   const {
     getSorted,
     sortConfig,
@@ -162,6 +163,7 @@ export const ManuscriptList: React.FC<ManuscriptListProps> = ({ filterTagIds }) 
                 onClick={() => {
                   openInPane(activePaneIndex, manuscript.id)
                   setViewMode('editor')
+                  onManuscriptSelect?.()
                 }}
                 onDelete={() => handleDelete(manuscript.id)}
                 onRename={(title) => updateManuscript(manuscript.id, { title })}

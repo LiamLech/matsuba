@@ -16,7 +16,7 @@ const PANE_ICONS: Record<PaneCount, string> = {
 }
 
 export const Header: React.FC = () => {
-  const { viewMode, paneCount, scrollSynced, setViewMode, setPaneCount, setScrollSynced } =
+  const { viewMode, paneCount, scrollSynced, setViewMode, setPaneCount, setScrollSynced, toggleSidebar, isSidebarOpen } =
     useUIStore()
   const manuscripts = useManuscriptStore((s) => s.manuscripts)
   const { exportAllAsZip } = useBackup()
@@ -31,14 +31,23 @@ export const Header: React.FC = () => {
 
   return (
     <header className={styles.header}>
+      {/* ハンバーガーメニュー（モバイルのみ表示） */}
+      <button
+        className={styles.hamburger}
+        onClick={toggleSidebar}
+        aria-label={isSidebarOpen ? 'メニューを閉じる' : 'メニューを開く'}
+      >
+        {isSidebarOpen ? '✕' : '☰'}
+      </button>
+
       {/* アプリ名 */}
       <div className={styles.logo}>matsuba</div>
 
-      <div className={styles.divider} />
+      <div className={`${styles.divider} ${styles.desktopOnly}`} />
 
-      {/* ペイン数切り替え（編集モード時のみ） */}
+      {/* ペイン数切り替え（編集モード時のみ・デスクトップ） */}
       {viewMode === 'editor' && (
-        <div className={styles.paneControls}>
+        <div className={`${styles.paneControls} ${styles.desktopOnly}`}>
           {([1, 2, 3] as PaneCount[]).map((n) => (
             <button
               key={n}

@@ -198,3 +198,10 @@
 }
 
 .editorOuter:focus-within { outline: none; }
+
+@media (max-width: 768px) {
+  .editorContent {
+    padding: 20px 20px;
+    font-size: var(--editor-font-size, 15px);
+  }
+}

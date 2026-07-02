@@ -59,3 +59,23 @@
   opacity: 0.3;
   cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+  .toolbar {
+    padding: 4px var(--sp-2);
+    gap: 1px;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .btn {
+    min-width: 36px;
+    height: 36px;
+    font-size: 13px;
+  }
+
+  .divider {
+    margin: 0 2px;
+  }
+}
