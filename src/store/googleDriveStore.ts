@@ -1,15 +1,17 @@
 // ============================================================
 // matsuba - Google Drive 同期ストア（Zustand）
-// アプリ全体でトークンと同期状態を共有する
 // ============================================================
 
 import { create } from 'zustand'
+import { nanoid } from 'nanoid'
 import type { Manuscript } from '../types'
 import { tiptapToMarkdown } from '../utils/tiptapToMarkdown'
+import { markdownToTiptap } from '../utils/markdownToTiptap'
 
 const FOLDER_NAME = 'matsuba'
+const SYNC_INTERVAL_MS = 30000
 
-type SyncStatus = 'idle' | 'syncing' | 'success' | 'error'
+type SyncStatus = 'idle' | 'syncing' | 'loading' | 'success' | 'error'
 
 // ── 日時フォーマット ──────────────────────────────────────────
 
@@ -45,11 +47,19 @@ async function getOrCreateFolder(token: string): Promise<string> {
 
 async function listFiles(token: string, folderId: string) {
   const res = await fetch(
-    `https://www.googleapis.com/drive/v3/files?q='${folderId}' in parents and trashed=false&fields=files(id,name)`,
+    `https://www.googleapis.com/drive/v3/files?q='${folderId}' in parents and trashed=false&fields=files(id,name,modifiedTime)`,
     { headers: { Authorization: `Bearer ${token}` } }
   )
   const data = await res.json()
-  return (data.files ?? []) as { id: string; name: string }[]
+  return (data.files ?? []) as { id: string; name: string; modifiedTime: string }[]
+}
+
+async function downloadFile(token: string, fileId: string): Promise<string> {
+  const res = await fetch(
+    `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  )
+  return res.text()
 }
 
 async function uploadFile(token: string, folderId: string, fileName: string, content: string, existingId?: string) {
@@ -76,12 +86,57 @@ async function uploadFile(token: string, folderId: string, fileName: string, con
 async function trashFile(token: string, fileId: string) {
   await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
     method: 'PATCH',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({ trashed: true }),
   })
+}
+
+// ── Markdownから原稿オブジェクトを生成 ───────────────────────
+
+function parseMarkdownToManuscript(markdown: string, existingId?: string): Partial<Manuscript> {
+  // frontmatterを解析
+  const frontmatterMatch = markdown.match(/^---\n([\s\S]*?)\n---\n/)
+  let title = 'untitled'
+  let direction: 'horizontal' | 'vertical' = 'horizontal'
+  let layoutId = 'prose'
+  let tags: string[] = []
+
+  if (frontmatterMatch) {
+    const fm = frontmatterMatch[1]
+    const titleMatch = fm.match(/^title:\s*(.+)$/m)
+    const directionMatch = fm.match(/^direction:\s*(.+)$/m)
+    const layoutMatch = fm.match(/^layoutId:\s*(.+)$/m)
+    const tagsMatch = fm.match(/^tags:\s*\[([^\]]*)\]$/m)
+
+    if (titleMatch) title = titleMatch[1].trim()
+    if (directionMatch) direction = directionMatch[1].trim() as 'horizontal' | 'vertical'
+    if (layoutMatch) layoutId = layoutMatch[1].trim()
+    if (tagsMatch) {
+      tags = tagsMatch[1].split(',').map(t => t.trim()).filter(Boolean)
+    }
+  }
+
+  // frontmatterを除いた本文
+  const body = markdown.replace(/^---\n[\s\S]*?\n---\n/, '')
+  const tiptapContent = markdownToTiptap(body)
+  const now = Math.floor(Date.now() / 1000)
+
+  return {
+    id: existingId ?? nanoid(),
+    title,
+    direction,
+    layoutId,
+    tags,
+    currentContent: tiptapContent,
+    currentContentText: body,
+    createdAt: now,
+    updatedAt: now,
+    order: 0,
+    attachments: [],
+    versions: [],
+    logs: [],
+    editorMode: 'rich',
+  }
 }
 
 function sanitizeFileName(title: string): string {
@@ -111,9 +166,9 @@ type GoogleDriveState = {
   lastSyncedAt: Date | null
   error: string | null
   folderId: string | null
+  isLoading: boolean
 
-  // アクション
-  setAccessToken: (token: string) => void
+  setAccessToken: (token: string, onLoad: (manuscripts: Partial<Manuscript>[]) => void) => Promise<void>
   clearToken: () => void
   sync: (manuscripts: Manuscript[]) => Promise<void>
 }
@@ -124,13 +179,47 @@ export const useGoogleDriveStore = create<GoogleDriveState>((set, get) => ({
   lastSyncedAt: null,
   error: null,
   folderId: null,
+  isLoading: false,
 
-  setAccessToken: (token) => {
-    set({ accessToken: token, status: 'idle', error: null })
+  // ログイン時：Driveからデータを読み込んでからトークンをセット
+  setAccessToken: async (token, onLoad) => {
+    set({ accessToken: token, status: 'loading', isLoading: true, error: null })
+
+    try {
+      // フォルダを取得または作成
+      const folderId = await getOrCreateFolder(token)
+      set({ folderId })
+
+      // Driveのファイル一覧を取得
+      const files = await listFiles(token, folderId)
+      const mdFiles = files.filter(f => f.name.endsWith('.md') && !f.name.includes('_v'))
+
+      if (mdFiles.length > 0) {
+        // 各ファイルを読み込んで原稿オブジェクトに変換
+        const manuscripts: Partial<Manuscript>[] = []
+        for (const file of mdFiles) {
+          const content = await downloadFile(token, file.id)
+          const manuscript = parseMarkdownToManuscript(content)
+          manuscripts.push(manuscript)
+        }
+
+        // コールバックでIndexedDBを更新
+        onLoad(manuscripts)
+      }
+
+      set({ status: 'success', isLoading: false, lastSyncedAt: new Date() })
+    } catch (err) {
+      console.error('Drive load error:', err)
+      set({
+        status: 'error',
+        isLoading: false,
+        error: err instanceof Error ? err.message : '読み込みに失敗しました',
+      })
+    }
   },
 
   clearToken: () => {
-    set({ accessToken: null, status: 'idle', lastSyncedAt: null, error: null, folderId: null })
+    set({ accessToken: null, status: 'idle', lastSyncedAt: null, error: null, folderId: null, isLoading: false })
   },
 
   sync: async (manuscripts) => {
@@ -140,18 +229,14 @@ export const useGoogleDriveStore = create<GoogleDriveState>((set, get) => ({
     set({ status: 'syncing', error: null })
 
     try {
-      // フォルダを取得または作成
       let { folderId } = get()
       if (!folderId) {
         folderId = await getOrCreateFolder(accessToken)
         set({ folderId })
       }
 
-      // Drive上の既存ファイル一覧
       const existingFiles = await listFiles(accessToken, folderId)
       const fileMap = new Map(existingFiles.map((f) => [f.name, f.id]))
-
-      // matsuba側のファイル名セット
       const matsubaNames = new Set(manuscripts.map((m) => `${sanitizeFileName(m.title)}.md`))
 
       // Drive側にあってmatsuba側にないファイルをゴミ箱へ
@@ -174,3 +259,5 @@ export const useGoogleDriveStore = create<GoogleDriveState>((set, get) => ({
     }
   },
 }))
+
+export { SYNC_INTERVAL_MS }

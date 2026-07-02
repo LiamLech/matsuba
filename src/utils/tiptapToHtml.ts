@@ -44,7 +44,7 @@ function inlineHtml(nodes: TiptapNode[] = []): string {
   }).join('')
 }
 
-function nodeToHtml(node: TiptapNode, ___________________listDepth = 0, _ordered = false, _index = 0): string {
+function nodeToHtml(node: TiptapNode, ____________________listDepth = 0, _ordered = false, _index = 0): string {
   switch (node.type) {
     case 'doc':
       return (node.content ?? []).map((c) => nodeToHtml(c)).join('\n')

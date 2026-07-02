@@ -71,6 +71,9 @@ type ManuscriptStore = {
   // 初期化
   loadAll: () => Promise<void>
 
+  // Driveから読み込み（全データを上書き）
+  loadFromDrive: (draftManuscripts: Partial<Manuscript>[]) => Promise<void>
+
   // 原稿CRUD
   createManuscript: (title: string) => Promise<Manuscript>
   updateManuscript: (id: ManuscriptId, patch: Partial<Manuscript>) => Promise<void>
@@ -119,6 +122,42 @@ export const useManuscriptStore = create<ManuscriptStore>((set, get) => ({
       console.error('原稿の読み込みに失敗しました', err)
       set({ isLoading: false })
     }
+  },
+
+  // ── Driveから読み込み（全データを上書き） ────────────────────
+
+  loadFromDrive: async (draftManuscripts) => {
+    const now = Math.floor(Date.now() / 1000)
+
+    // 既存のIndexedDBデータを全削除
+    const { manuscripts: existing } = get()
+    for (const m of existing) {
+      await deleteManuscript(m.id)
+    }
+
+    // Driveのデータを順番付きで保存
+    const newManuscripts: Manuscript[] = draftManuscripts.map((draft, index) => ({
+      id: draft.id ?? nanoid(),
+      title: draft.title ?? 'untitled',
+      createdAt: draft.createdAt ?? now,
+      updatedAt: draft.updatedAt ?? now,
+      order: index,
+      direction: draft.direction ?? 'horizontal',
+      layoutId: draft.layoutId ?? 'prose',
+      editorMode: draft.editorMode ?? 'rich',
+      tags: draft.tags ?? [],
+      attachments: draft.attachments ?? [],
+      versions: draft.versions ?? [],
+      logs: draft.logs ?? [],
+      currentContent: draft.currentContent ?? null,
+      currentContentText: draft.currentContentText ?? '',
+    }))
+
+    for (const m of newManuscripts) {
+      await putManuscript(m)
+    }
+
+    set({ manuscripts: newManuscripts })
   },
 
   // ── 原稿CRUD ─────────────────────────────────────────────

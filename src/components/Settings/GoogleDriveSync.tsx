@@ -10,11 +10,13 @@ import styles from './GoogleDriveSync.module.css'
 
 export const GoogleDriveSync: React.FC = () => {
   const manuscripts = useManuscriptStore((s) => s.manuscripts)
+  const loadFromDrive = useManuscriptStore((s) => s.loadFromDrive)
 
   const accessToken  = useGoogleDriveStore((s) => s.accessToken)
   const status       = useGoogleDriveStore((s) => s.status)
   const lastSyncedAt = useGoogleDriveStore((s) => s.lastSyncedAt)
   const error        = useGoogleDriveStore((s) => s.error)
+  const isLoading    = useGoogleDriveStore((s) => s.isLoading)
   const setAccessToken = useGoogleDriveStore((s) => s.setAccessToken)
   const clearToken   = useGoogleDriveStore((s) => s.clearToken)
   const sync         = useGoogleDriveStore((s) => s.sync)
@@ -22,7 +24,10 @@ export const GoogleDriveSync: React.FC = () => {
   const isConnected = accessToken !== null
 
   const login = useGoogleLogin({
-    onSuccess: (res) => setAccessToken(res.access_token),
+    onSuccess: (res) => {
+      // ログイン時にDriveから自動読み込み
+      setAccessToken(res.access_token, loadFromDrive)
+    },
     onError: () => console.error('Google login failed'),
     scope: 'https://www.googleapis.com/auth/drive.file',
   })
@@ -53,13 +58,19 @@ export const GoogleDriveSync: React.FC = () => {
 
       {isConnected && (
         <div className={styles.syncInfo}>
-          {status === 'syncing' && (
+          {isLoading && (
+            <div className={styles.syncRow}>
+              <span className={styles.syncingDot} />
+              <span>Driveから読み込み中…</span>
+            </div>
+          )}
+          {!isLoading && status === 'syncing' && (
             <div className={styles.syncRow}>
               <span className={styles.syncingDot} />
               <span>同期中…</span>
             </div>
           )}
-          {status === 'success' && lastSyncedAt && (
+          {!isLoading && status === 'success' && lastSyncedAt && (
             <div className={styles.syncRow}>
               <span className={styles.successDot} />
               <span>最終同期：{formatTime(lastSyncedAt)}</span>
@@ -74,6 +85,9 @@ export const GoogleDriveSync: React.FC = () => {
           <div className={styles.syncNote}>
             30秒ごとに自動同期 · Driveの「matsuba」フォルダに保存
           </div>
+          <div className={styles.syncWarning}>
+            ⚠ 複数端末で使用する場合は同時に編集しないでください。別端末に切り替える前に同期を確認してください。
+          </div>
         </div>
       )}
 
@@ -83,7 +97,7 @@ export const GoogleDriveSync: React.FC = () => {
             <button
               className="btn"
               onClick={() => sync(manuscripts)}
-              disabled={status === 'syncing'}
+              disabled={status === 'syncing' || isLoading}
             >
               今すぐ同期
             </button>

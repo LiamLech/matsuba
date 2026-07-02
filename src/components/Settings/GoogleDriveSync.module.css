@@ -112,3 +112,13 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.3; }
 }
+
+.syncWarning {
+  font-size: 11px;
+  color: var(--c-ink-faint);
+  padding: var(--sp-2) var(--sp-3);
+  background: rgba(196, 149, 106, 0.08);
+  border: 1px solid rgba(196, 149, 106, 0.2);
+  border-radius: var(--radius);
+  line-height: 1.6;
+}

@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 // matsuba - TiptapEditor（Phase 2リッチテキストエディタ）
 // ============================================================
 
@@ -30,6 +30,7 @@ import { Ruby } from './extensions/Ruby'
 import { Toolbar } from './Toolbar'
 import { RubyInput } from './RubyInput'
 import styles from './TiptapEditor.module.css'
+
 type TiptapEditorProps = {
   manuscriptId: ManuscriptId
   preset: LayoutPreset
@@ -51,6 +52,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     s.manuscripts.find((m) => m.id === manuscriptId)
   )
   const updateManuscript = useManuscriptStore((s) => s.updateManuscript)
+
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const scheduleSave = useCallback((json: TiptapJSON, text: string) => {
@@ -66,11 +68,25 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 
   const editor = useEditor({
     extensions: [
-      Document, Paragraph, Text, Bold, Italic, Strike,
+      Document,
+      Paragraph,
+      Text,
+      Bold,
+      Italic,
+      Strike,
       Heading.configure({ levels: [1, 2, 3] }),
-      BulletList, OrderedList, ListItem,
-      Blockquote, CodeBlock, Code, HardBreak, HorizontalRule,
-      History, Dropcursor, Gapcursor, Ruby,
+      BulletList,
+      OrderedList,
+      ListItem,
+      Blockquote,
+      CodeBlock,
+      Code,
+      HardBreak,
+      HorizontalRule,
+      History,
+      Dropcursor,
+      Gapcursor,
+      Ruby,
     ],
     content: (manuscript?.currentContent as object) ?? '',
     editorProps: {
@@ -82,23 +98,28 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     onUpdate: ({ editor }) => {
       const json = editor.getJSON()
       const text = editor.getText()
-      onCharCountChange(text.replace(/\s/g, '').length)
+      const charCount = text.replace(/\s/g, '').length
+      onCharCountChange(charCount)
       scheduleSave(json, text)
     },
     onCreate: ({ editor }) => {
-      onCharCountChange(editor.getText().replace(/\s/g, '').length)
+      const text = editor.getText()
+      onCharCountChange(text.replace(/\s/g, '').length)
     },
   })
 
+  // 原稿切り替え時にエディタの内容を更新
   useEffect(() => {
     if (!editor || !manuscript) return
     const currentJson = editor.getJSON()
     const savedJson = manuscript.currentContent
     if (JSON.stringify(currentJson) === JSON.stringify(savedJson)) return
     editor.commands.setContent((savedJson as object) ?? '', false)
-    onCharCountChange(editor.getText().replace(/\s/g, '').length)
+    const text = editor.getText()
+    onCharCountChange(text.replace(/\s/g, '').length)
   }, [manuscriptId])
 
+  // アンマウント時に即時保存
   useEffect(() => {
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
@@ -113,6 +134,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     }
   }, [manuscriptId, editor, updateManuscript])
 
+  // 縦書き切り替え時にeditorPropsのクラスを動的に更新
   useEffect(() => {
     if (!editor) return
     editor.setOptions({
@@ -125,9 +147,11 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     })
   }, [editor, direction])
 
+  // 執筆ログ
   const charCount = editor ? editor.getText().replace(/\s/g, '').length : 0
   useEditLog({ manuscriptId, charCount })
 
+  // レイアウトプリセットのCSSカスタムプロパティ
   const presetStyle: React.CSSProperties = {
     '--editor-font-size':         `${preset.fontSize}px`,
     '--editor-line-height':       String(preset.lineHeight),
@@ -137,6 +161,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     '--editor-paragraph-spacing': `${preset.paragraphSpacing}em`,
   } as React.CSSProperties
 
+  // 右クリックメニュー
   const handleContextMenu = (e: React.MouseEvent) => {
     if (!editor) return
     const { empty } = editor.state.selection
@@ -145,16 +170,22 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     window.dispatchEvent(new CustomEvent('matsuba:openRubyDialog'))
   }
 
+  // 縦書き時のホイールスクロール方向変換（下→左）
   const wrapperRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     const el = wrapperRef.current
     if (!el || direction !== 'vertical') return
+
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault()
+      // editorAreaを探してスクロール
       const area = el.querySelector(`.${styles.verticalArea}`) as HTMLElement | null
-      if (area) area.scrollLeft -= e.deltaY
+      if (area) {
+        area.scrollLeft -= e.deltaY
+      }
     }
+
     el.addEventListener('wheel', handleWheel, { passive: false })
     return () => el.removeEventListener('wheel', handleWheel)
   }, [direction])
