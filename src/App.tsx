@@ -39,6 +39,13 @@ const AppInner: React.FC = () => {
   // Google Drive自動同期（ストアで管理するためページ遷移しても継続）
   const driveAccessToken = useGoogleDriveStore((s) => s.accessToken)
   const driveSync = useGoogleDriveStore((s) => s.sync)
+  const restoreToken = useGoogleDriveStore((s) => s.restoreToken)
+  const loadFromDrive = useManuscriptStore((s) => s.loadFromDrive)
+
+  // リロード時にlocalStorageからトークンを復元してDriveから読み込み
+  useEffect(() => {
+    restoreToken(loadFromDrive)
+  }, [])
 
   useEffect(() => {
     if (!driveAccessToken) return

@@ -25,7 +25,6 @@ export const GoogleDriveSync: React.FC = () => {
 
   const login = useGoogleLogin({
     onSuccess: (res) => {
-      // ログイン時にDriveから自動読み込み
       setAccessToken(res.access_token, loadFromDrive)
     },
     onError: () => console.error('Google login failed'),
