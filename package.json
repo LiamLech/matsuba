@@ -1,9 +1,8 @@
-PS C:\Users\origuchitou\Documents\matsuba> cat package.json
 {
   "name": "matsuba",
   "version": "0.1.0",
   "private": true,
-  "description": "蜴溽ｨｿ邂｡逅・eb繧｢繝励Μ",
+  "description": "原稿管理Webアプリ",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -13,20 +12,27 @@ PS C:\Users\origuchitou\Documents\matsuba> cat package.json
   },
   "dependencies": {
     "@react-oauth/google": "^0.13.5",
-    "@tiptap/core": "^2.10.4",
-    "@tiptap/extension-bold": "^2.4.0",
-    "@tiptap/extension-bullet-list": "^2.4.0",
-    "@tiptap/extension-document": "^2.4.0",
-    "@tiptap/extension-heading": "^2.4.0",
-    "@tiptap/extension-history": "^2.4.0",
-    "@tiptap/extension-italic": "^2.4.0",
-    "@tiptap/extension-list-item": "^2.4.0",
-    "@tiptap/extension-ordered-list": "^2.4.0",
-    "@tiptap/extension-paragraph": "^2.4.0",
-    "@tiptap/extension-text": "^2.4.0",
-    "@tiptap/pm": "^2.10.4",
-    "@tiptap/react": "^2.10.4",
-    "@tiptap/starter-kit": "^2.10.4",
+    "@tiptap/core": "2.4.0",
+    "@tiptap/extension-blockquote": "2.4.0",
+    "@tiptap/extension-bold": "2.4.0",
+    "@tiptap/extension-bullet-list": "2.4.0",
+    "@tiptap/extension-code": "2.4.0",
+    "@tiptap/extension-code-block": "2.4.0",
+    "@tiptap/extension-document": "2.4.0",
+    "@tiptap/extension-dropcursor": "2.4.0",
+    "@tiptap/extension-gapcursor": "2.4.0",
+    "@tiptap/extension-hard-break": "2.4.0",
+    "@tiptap/extension-heading": "2.4.0",
+    "@tiptap/extension-history": "2.4.0",
+    "@tiptap/extension-horizontal-rule": "2.4.0",
+    "@tiptap/extension-italic": "2.4.0",
+    "@tiptap/extension-list-item": "2.4.0",
+    "@tiptap/extension-ordered-list": "2.4.0",
+    "@tiptap/extension-paragraph": "2.4.0",
+    "@tiptap/extension-strike": "2.4.0",
+    "@tiptap/extension-text": "2.4.0",
+    "@tiptap/pm": "2.4.0",
+    "@tiptap/react": "2.4.0",
     "jszip": "^3.10.1",
     "nanoid": "^5.0.7",
     "react": "^18.3.1",
@@ -45,4 +51,3 @@ PS C:\Users\origuchitou\Documents\matsuba> cat package.json
     "vite": "^5.3.1"
   }
 }
-PS C:\Users\origuchitou\Documents\matsuba>
