@@ -1,10 +1,27 @@
-// ============================================================
+﻿// ============================================================
 // matsuba - TiptapEditor（Phase 2リッチテキストエディタ）
 // ============================================================
 
 import React, { useEffect, useRef, useCallback } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
+import Document from '@tiptap/extension-document'
+import Paragraph from '@tiptap/extension-paragraph'
+import Text from '@tiptap/extension-text'
+import Bold from '@tiptap/extension-bold'
+import Italic from '@tiptap/extension-italic'
+import Strike from '@tiptap/extension-strike'
+import Heading from '@tiptap/extension-heading'
+import BulletList from '@tiptap/extension-bullet-list'
+import OrderedList from '@tiptap/extension-ordered-list'
+import ListItem from '@tiptap/extension-list-item'
+import Blockquote from '@tiptap/extension-blockquote'
+import CodeBlock from '@tiptap/extension-code-block'
+import Code from '@tiptap/extension-code'
+import HardBreak from '@tiptap/extension-hard-break'
+import HorizontalRule from '@tiptap/extension-horizontal-rule'
+import History from '@tiptap/extension-history'
+import Dropcursor from '@tiptap/extension-dropcursor'
+import Gapcursor from '@tiptap/extension-gapcursor'
 import type { ManuscriptId, LayoutPreset, WritingDirection, TiptapJSON } from '../../types'
 import { useManuscriptStore } from '../../store/manuscriptStore'
 import { useEditLog } from '../../hooks/useEditLog'
@@ -13,7 +30,6 @@ import { Ruby } from './extensions/Ruby'
 import { Toolbar } from './Toolbar'
 import { RubyInput } from './RubyInput'
 import styles from './TiptapEditor.module.css'
-
 type TiptapEditorProps = {
   manuscriptId: ManuscriptId
   preset: LayoutPreset
@@ -35,7 +51,6 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     s.manuscripts.find((m) => m.id === manuscriptId)
   )
   const updateManuscript = useManuscriptStore((s) => s.updateManuscript)
-
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const scheduleSave = useCallback((json: TiptapJSON, text: string) => {
@@ -51,10 +66,11 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({
-        heading: { levels: [1, 2, 3] },
-      }),
-      Ruby,
+      Document, Paragraph, Text, Bold, Italic, Strike,
+      Heading.configure({ levels: [1, 2, 3] }),
+      BulletList, OrderedList, ListItem,
+      Blockquote, CodeBlock, Code, HardBreak, HorizontalRule,
+      History, Dropcursor, Gapcursor, Ruby,
     ],
     content: (manuscript?.currentContent as object) ?? '',
     editorProps: {
@@ -66,28 +82,23 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     onUpdate: ({ editor }) => {
       const json = editor.getJSON()
       const text = editor.getText()
-      const charCount = text.replace(/\s/g, '').length
-      onCharCountChange(charCount)
+      onCharCountChange(text.replace(/\s/g, '').length)
       scheduleSave(json, text)
     },
     onCreate: ({ editor }) => {
-      const text = editor.getText()
-      onCharCountChange(text.replace(/\s/g, '').length)
+      onCharCountChange(editor.getText().replace(/\s/g, '').length)
     },
   })
 
-  // 原稿切り替え時にエディタの内容を更新
   useEffect(() => {
     if (!editor || !manuscript) return
     const currentJson = editor.getJSON()
     const savedJson = manuscript.currentContent
     if (JSON.stringify(currentJson) === JSON.stringify(savedJson)) return
     editor.commands.setContent((savedJson as object) ?? '', false)
-    const text = editor.getText()
-    onCharCountChange(text.replace(/\s/g, '').length)
+    onCharCountChange(editor.getText().replace(/\s/g, '').length)
   }, [manuscriptId])
 
-  // アンマウント時に即時保存
   useEffect(() => {
     return () => {
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current)
@@ -102,7 +113,6 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     }
   }, [manuscriptId, editor, updateManuscript])
 
-  // 縦書き切り替え時にeditorPropsのクラスを動的に更新
   useEffect(() => {
     if (!editor) return
     editor.setOptions({
@@ -115,11 +125,9 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     })
   }, [editor, direction])
 
-  // 執筆ログ
   const charCount = editor ? editor.getText().replace(/\s/g, '').length : 0
   useEditLog({ manuscriptId, charCount })
 
-  // レイアウトプリセットのCSSカスタムプロパティ
   const presetStyle: React.CSSProperties = {
     '--editor-font-size':         `${preset.fontSize}px`,
     '--editor-line-height':       String(preset.lineHeight),
@@ -129,7 +137,6 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     '--editor-paragraph-spacing': `${preset.paragraphSpacing}em`,
   } as React.CSSProperties
 
-  // 右クリックメニュー
   const handleContextMenu = (e: React.MouseEvent) => {
     if (!editor) return
     const { empty } = editor.state.selection
@@ -138,22 +145,16 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     window.dispatchEvent(new CustomEvent('matsuba:openRubyDialog'))
   }
 
-  // 縦書き時のホイールスクロール方向変換（下→左）
   const wrapperRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     const el = wrapperRef.current
     if (!el || direction !== 'vertical') return
-
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault()
-      // editorAreaを探してスクロール
       const area = el.querySelector(`.${styles.verticalArea}`) as HTMLElement | null
-      if (area) {
-        area.scrollLeft -= e.deltaY
-      }
+      if (area) area.scrollLeft -= e.deltaY
     }
-
     el.addEventListener('wheel', handleWheel, { passive: false })
     return () => el.removeEventListener('wheel', handleWheel)
   }, [direction])
