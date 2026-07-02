@@ -1,8 +1,9 @@
+PS C:\Users\origuchitou\Documents\matsuba> cat package.json
 {
   "name": "matsuba",
   "version": "0.1.0",
   "private": true,
-  "description": "原稿管理Webアプリ",
+  "description": "蜴溽ｨｿ邂｡逅・eb繧｢繝励Μ",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -44,3 +45,4 @@
     "vite": "^5.3.1"
   }
 }
+PS C:\Users\origuchitou\Documents\matsuba>
