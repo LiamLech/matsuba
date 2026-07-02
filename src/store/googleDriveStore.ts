@@ -18,7 +18,8 @@ type SyncStatus = 'idle' | 'syncing' | 'loading' | 'success' | 'error'
 // 笏笏 繝医・繧ｯ繝ｳ縺ｮ豌ｸ邯壼喧 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 
 function saveToken(token: string) {
-  // トークンの有効期限を50分後に設定  const expiry = Date.now() + 50 * 60 * 1000
+  // トークンの有効期限を50分後に設定
+  const expiry = Date.now() + 50 * 60 * 1000
   localStorage.setItem(STORAGE_KEY, token)
   localStorage.setItem(STORAGE_EXPIRY_KEY, String(expiry))
 }
@@ -281,5 +282,6 @@ export const useGoogleDriveStore = create<GoogleDriveState>((set, get) => ({
     }
   },
 }))
+
 
 
