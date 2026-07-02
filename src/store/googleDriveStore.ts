@@ -1,6 +1,5 @@
-// ============================================================
-// matsuba - Google Drive 同期ストア（Zustand）
-// ============================================================
+﻿// ============================================================
+// matsuba - Google Drive 蜷梧悄繧ｹ繝医い・・ustand・・// ============================================================
 
 import { create } from 'zustand'
 import { nanoid } from 'nanoid'
@@ -16,11 +15,10 @@ const STORAGE_EXPIRY_KEY = 'matsuba_drive_token_expiry'
 
 type SyncStatus = 'idle' | 'syncing' | 'loading' | 'success' | 'error'
 
-// ── トークンの永続化 ──────────────────────────────────────────
+// 笏笏 繝医・繧ｯ繝ｳ縺ｮ豌ｸ邯壼喧 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 
 function saveToken(token: string) {
-  // トークンの有効期限を50分後に設定（Googleのトークンは1時間有効）
-  const expiry = Date.now() + 50 * 60 * 1000
+  // 繝医・繧ｯ繝ｳ縺ｮ譛牙柑譛滄剞繧・0蛻・ｾ後↓險ｭ螳夲ｼ・oogle縺ｮ繝医・繧ｯ繝ｳ縺ｯ1譎る俣譛牙柑・・  const expiry = Date.now() + 50 * 60 * 1000
   localStorage.setItem(STORAGE_KEY, token)
   localStorage.setItem(STORAGE_EXPIRY_KEY, String(expiry))
 }
@@ -42,7 +40,7 @@ function clearToken() {
   localStorage.removeItem(STORAGE_EXPIRY_KEY)
 }
 
-// ── 日時フォーマット ──────────────────────────────────────────
+// 笏笏 譌･譎ゅヵ繧ｩ繝ｼ繝槭ャ繝・笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 
 function formatDateISO(date: Date): string {
   const pad = (n: number) => String(n).padStart(2, '0')
@@ -54,7 +52,7 @@ function formatDateISO(date: Date): string {
   return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}${sign}${oh}:${om}`
 }
 
-// ── Drive API ヘルパー ────────────────────────────────────────
+// 笏笏 Drive API 繝倥Ν繝代・ 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 
 async function getOrCreateFolder(token: string): Promise<string> {
   const headers = { Authorization: `Bearer ${token}` }
@@ -120,7 +118,7 @@ async function trashFile(token: string, fileId: string) {
   })
 }
 
-// ── Markdownから原稿オブジェクトを生成 ───────────────────────
+// 笏笏 Markdown縺九ｉ蜴溽ｨｿ繧ｪ繝悶ず繧ｧ繧ｯ繝医ｒ逕滓・ 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 
 function parseMarkdownToManuscript(markdown: string): Partial<Manuscript> {
   const frontmatterMatch = markdown.match(/^---\n([\s\S]*?)\n---\n/)
@@ -175,7 +173,7 @@ function manuscriptToMarkdown(manuscript: Manuscript): string {
   return frontmatter + content
 }
 
-// ── Driveから読み込む共通処理 ─────────────────────────────────
+// 笏笏 Drive縺九ｉ隱ｭ縺ｿ霎ｼ繧蜈ｱ騾壼・逅・笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 
 async function loadFromDriveInternal(
   token: string,
@@ -197,7 +195,7 @@ async function loadFromDriveInternal(
   return folderId
 }
 
-// ── ストア ────────────────────────────────────────────────────
+// 笏笏 繧ｹ繝医い 笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏笏
 
 type GoogleDriveState = {
   accessToken: string | null
@@ -221,30 +219,30 @@ export const useGoogleDriveStore = create<GoogleDriveState>((set, get) => ({
   folderId: null,
   isLoading: false,
 
-  // ログイン時：トークンを保存してDriveから読み込み
+  // 繝ｭ繧ｰ繧､繝ｳ譎ゑｼ壹ヨ繝ｼ繧ｯ繝ｳ繧剃ｿ晏ｭ倥＠縺ｦDrive縺九ｉ隱ｭ縺ｿ霎ｼ縺ｿ
   setAccessToken: async (token, onLoad) => {
     saveToken(token)
-    set({ accessToken: token, status: 'loading', isLoading: true, error: null })
+    set({ accessToken: token, status: 'loading', isLoading: true, error: null, folderId: null })
     try {
       const folderId = await loadFromDriveInternal(token, onLoad)
       set({ folderId, status: 'success', isLoading: false, lastSyncedAt: new Date() })
     } catch (err) {
       console.error('Drive load error:', err)
-      set({ status: 'error', isLoading: false, error: err instanceof Error ? err.message : '読み込みに失敗しました' })
+      set({ status: 'error', isLoading: false, error: err instanceof Error ? err.message : '隱ｭ縺ｿ霎ｼ縺ｿ縺ｫ螟ｱ謨励＠縺ｾ縺励◆' })
     }
   },
 
-  // リロード時：localStorageからトークンを復元してDriveから読み込み
+  // 繝ｪ繝ｭ繝ｼ繝画凾・嗟ocalStorage縺九ｉ繝医・繧ｯ繝ｳ繧貞ｾｩ蜈・＠縺ｦDrive縺九ｉ隱ｭ縺ｿ霎ｼ縺ｿ
   restoreToken: async (onLoad) => {
     const token = loadToken()
     if (!token) return
 
-    set({ accessToken: token, status: 'loading', isLoading: true, error: null })
+    set({ accessToken: token, status: 'loading', isLoading: true, error: null, folderId: null })
     try {
       const folderId = await loadFromDriveInternal(token, onLoad)
       set({ folderId, status: 'success', isLoading: false, lastSyncedAt: new Date() })
     } catch (err) {
-      // トークンが失効していた場合はクリア
+      // 繝医・繧ｯ繝ｳ縺悟､ｱ蜉ｹ縺励※縺・◆蝣ｴ蜷医・繧ｯ繝ｪ繧｢
       console.error('Drive restore error:', err)
       clearToken()
       set({ accessToken: null, status: 'idle', isLoading: false, error: null })
@@ -279,7 +277,8 @@ export const useGoogleDriveStore = create<GoogleDriveState>((set, get) => ({
       set({ status: 'success', lastSyncedAt: new Date() })
     } catch (err) {
       console.error('Drive sync error:', err)
-      set({ status: 'error', error: err instanceof Error ? err.message : '同期に失敗しました' })
+      set({ status: 'error', error: err instanceof Error ? err.message : '蜷梧悄縺ｫ螟ｱ謨励＠縺ｾ縺励◆' })
     }
   },
 }))
+
