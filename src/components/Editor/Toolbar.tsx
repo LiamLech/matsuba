@@ -4,10 +4,12 @@
 
 import React from 'react'
 import type { Editor } from '@tiptap/react'
+import type { WritingDirection } from '../../types'
 import styles from './Toolbar.module.css'
 
 type ToolbarProps = {
   editor: Editor
+  direction?: WritingDirection
 }
 
 type ToolbarButton = {
@@ -18,7 +20,7 @@ type ToolbarButton = {
   isDisabled?: () => boolean
 }
 
-export const Toolbar: React.FC<ToolbarProps> = ({ editor }) => {
+export const Toolbar: React.FC<ToolbarProps> = ({ editor, direction = 'horizontal' }) => {
   const buttons: ToolbarButton[] = [
     {
       label: 'B',
@@ -94,7 +96,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({ editor }) => {
   )
 
   return (
-    <div className={styles.toolbar}>
+    <div className={`${styles.toolbar} ${direction === 'vertical' ? styles.toolbarVertical : ''}`}>
       {/* 書式 */}
       <div className={styles.group}>
         {buttons.map((btn) => renderButton(btn, btn.label))}

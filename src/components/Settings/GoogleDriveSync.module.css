@@ -1,0 +1,114 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  background: var(--c-paper-dim);
+  border: var(--border);
+  border-radius: var(--radius);
+}
+
+/* ヘッダー */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.serviceIcon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-paper);
+  border: var(--border);
+  border-radius: var(--radius);
+  flex-shrink: 0;
+}
+
+.serviceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.serviceName {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--c-ink);
+}
+
+.serviceStatus {
+  font-size: 11px;
+  font-family: var(--font-mono);
+}
+
+.statusConnected {
+  color: var(--c-success);
+}
+
+.statusDisconnected {
+  color: var(--c-ink-faint);
+}
+
+/* 同期状態 */
+.syncInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.syncRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: 12px;
+  color: var(--c-ink-mid);
+}
+
+.syncingDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-accent);
+  animation: pulse 1s infinite;
+  flex-shrink: 0;
+}
+
+.successDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-success);
+  flex-shrink: 0;
+}
+
+.errorDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-danger);
+  flex-shrink: 0;
+}
+
+.errorText {
+  color: var(--c-danger);
+}
+
+.syncNote {
+  font-size: 11px;
+  color: var(--c-ink-faint);
+  padding-left: var(--sp-3);
+}
+
+/* ボタン */
+.actions {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}

@@ -102,12 +102,22 @@ export function tiptapToMarkdown(json: unknown): string {
   return nodeToMarkdown(doc).replace(/\n{3,}/g, '\n\n').trim()
 }
 
+function formatDateISO(date: Date): string {
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const offset = -date.getTimezoneOffset()
+  const sign = offset >= 0 ? '+' : '-'
+  const absOffset = Math.abs(offset)
+  const oh = pad(Math.floor(absOffset / 60))
+  const om = pad(absOffset % 60)
+  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}${sign}${oh}:${om}`
+}
+
 export function buildFrontmatter(title: string, versionLabel?: string): string {
   return [
     '---',
     `title: ${title}`,
     versionLabel ? `version: ${versionLabel}` : 'version: 現在の版',
-    `date: ${new Date().toISOString().slice(0, 10)}`,
+    `date: ${formatDateISO(new Date())}`,
     '---',
     '',
   ].join('\n')

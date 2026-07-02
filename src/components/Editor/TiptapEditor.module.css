@@ -6,18 +6,27 @@
   background: var(--c-paper);
 }
 
-.vertical {
-  writing-mode: vertical-rl;
-}
-
+/* 縦書き時はエディタエリアを横スクロールに変更 */
 .editorArea {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
+.editorArea.verticalArea {
+  overflow-y: hidden;
+  overflow-x: auto;
+  display: flex;
+  flex-direction: row-reverse; /* 縦書きは右から左へ */
+}
+
 .editorOuter {
   height: 100%;
+}
+
+.editorOuter.verticalOuter {
+  height: 100%;
+  min-width: max-content;
 }
 
 /* Tiptapエディタ本体のスタイル */
@@ -29,11 +38,22 @@
   color: var(--c-ink);
   background: var(--c-paper);
 
-  /* プリセットのCSSカスタムプロパティを適用 */
   font-size: var(--editor-font-size, 16px);
   line-height: var(--editor-line-height, 1.9);
   letter-spacing: var(--editor-letter-spacing, 0.02em);
   text-align: var(--editor-text-align, left);
+}
+
+/* 縦書き時のエディタ本体 */
+.editorContent.verticalContent {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  min-height: unset;
+  height: calc(100% - 80px);
+  min-width: 2em;
+  padding: 40px;
+  /* 縦書き時はtext-alignを上揃えに */
+  text-align: start;
 }
 
 /* 段落 */
@@ -44,6 +64,13 @@
 
 .editorContent p:last-child {
   margin-bottom: 0;
+}
+
+/* 縦書き時の段落 */
+.editorContent.verticalContent p {
+  margin-bottom: 0;
+  margin-right: var(--editor-paragraph-spacing, 1em);
+  text-indent: var(--editor-text-indent, 0);
 }
 
 /* 見出し */
@@ -73,21 +100,17 @@
   line-height: 1.4;
 }
 
+/* 縦書き時の見出しはmarginを横方向に */
+.editorContent.verticalContent h1,
+.editorContent.verticalContent h2,
+.editorContent.verticalContent h3 {
+  margin: 0 0.5em 0 1em;
+}
+
 /* 強調 */
-.editorContent strong {
-  font-weight: 600;
-  color: var(--c-ink);
-}
-
-.editorContent em {
-  font-style: italic;
-  color: var(--c-ink-mid);
-}
-
-.editorContent s {
-  text-decoration: line-through;
-  color: var(--c-ink-faint);
-}
+.editorContent strong { font-weight: 600; color: var(--c-ink); }
+.editorContent em { font-style: italic; color: var(--c-ink-mid); }
+.editorContent s { text-decoration: line-through; color: var(--c-ink-faint); }
 
 /* リスト */
 .editorContent ul,
@@ -96,15 +119,21 @@
   margin-bottom: var(--editor-paragraph-spacing, 1em);
 }
 
-.editorContent li {
-  margin-bottom: 0.3em;
-}
+.editorContent li { margin-bottom: 0.3em; }
 
 /* 水平線 */
 .editorContent hr {
   border: none;
   border-top: 1px solid var(--c-paper-deep);
   margin: 1.5em 0;
+}
+
+/* 縦書き時の水平線は垂直線に */
+.editorContent.verticalContent hr {
+  border: none;
+  border-right: 1px solid var(--c-paper-deep);
+  margin: 0 1.5em;
+  height: auto;
 }
 
 /* ブロッククォート */
@@ -114,6 +143,14 @@
   margin-left: 0;
   color: var(--c-ink-mid);
   font-style: italic;
+}
+
+.editorContent.verticalContent blockquote {
+  border-left: none;
+  border-top: 3px solid var(--c-accent);
+  padding-left: 0;
+  padding-top: 0.5em;
+  margin-left: 0;
 }
 
 /* コード */
@@ -132,9 +169,18 @@
   overflow-x: auto;
 }
 
-.editorContent pre code {
-  background: none;
-  padding: 0;
+.editorContent pre code { background: none; padding: 0; }
+
+/* ルビ */
+.editorContent ruby { ruby-align: center; }
+.editorContent ruby rt {
+  font-size: 0.5em;
+  color: var(--c-ink-faint);
+}
+
+/* 縦書き時はルビを右側に */
+.editorContent.verticalContent ruby rt {
+  ruby-position: right;
 }
 
 /* プレースホルダー */
@@ -146,26 +192,9 @@
   height: 0;
 }
 
-/* ルビ */
-.editorContent ruby {
-  ruby-align: center;
+.editorContent.verticalContent.is-editor-empty:first-child::before {
+  float: none;
+  display: block;
 }
 
-.editorContent ruby rt {
-  font-size: 0.5em;
-  color: var(--c-ink-faint);
-}
-
-/* モノルビ */
-.editorContent ruby[data-ruby-type="mono"] {
-  ruby-align: space-between;
-}
-
-.editorContent ruby[data-ruby-type="mono"] rt {
-  text-align: center;
-}
-
-/* フォーカスリングを無効化（独自スタイルで管理） */
-.editorOuter:focus-within {
-  outline: none;
-}
+.editorOuter:focus-within { outline: none; }

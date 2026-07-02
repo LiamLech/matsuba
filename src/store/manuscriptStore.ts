@@ -134,6 +134,7 @@ export const useManuscriptStore = create<ManuscriptStore>((set, get) => ({
       order: manuscripts.length,
       direction: 'horizontal',
       layoutId: 'prose',
+      editorMode: 'rich',
       tags: [],
       attachments: [],
       versions: [],

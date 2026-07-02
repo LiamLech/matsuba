@@ -59,7 +59,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     content: (manuscript?.currentContent as object) ?? '',
     editorProps: {
       attributes: {
-        class: styles.editorContent,
+        class: `${styles.editorContent} ${direction === 'vertical' ? styles.verticalContent : ''}`,
         spellcheck: 'false',
       },
     },
@@ -102,6 +102,19 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     }
   }, [manuscriptId, editor, updateManuscript])
 
+  // 縦書き切り替え時にeditorPropsのクラスを動的に更新
+  useEffect(() => {
+    if (!editor) return
+    editor.setOptions({
+      editorProps: {
+        attributes: {
+          class: `${styles.editorContent} ${direction === 'vertical' ? styles.verticalContent : ''}`,
+          spellcheck: 'false',
+        },
+      },
+    })
+  }, [editor, direction])
+
   // 執筆ログ
   const charCount = editor ? editor.getText().replace(/\s/g, '').length : 0
   useEditLog({ manuscriptId, charCount })
@@ -125,19 +138,43 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     window.dispatchEvent(new CustomEvent('matsuba:openRubyDialog'))
   }
 
+  // 縦書き時のホイールスクロール方向変換（下→左）
+  const wrapperRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const el = wrapperRef.current
+    if (!el || direction !== 'vertical') return
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault()
+      // editorAreaを探してスクロール
+      const area = el.querySelector(`.${styles.verticalArea}`) as HTMLElement | null
+      if (area) {
+        area.scrollLeft -= e.deltaY
+      }
+    }
+
+    el.addEventListener('wheel', handleWheel, { passive: false })
+    return () => el.removeEventListener('wheel', handleWheel)
+  }, [direction])
+
   return (
     <div
-      className={`${styles.wrapper} ${direction === 'vertical' ? styles.vertical : ''}`}
-      ref={scrollRef}
+      className={styles.wrapper}
+      ref={(el) => {
+        wrapperRef.current = el
+        if (typeof scrollRef === 'function') scrollRef(el)
+      }}
       onScroll={onScroll}
       onContextMenu={handleContextMenu}
     >
       {editor && <Toolbar editor={editor} />}
-      {/* presetStyleをeditorAreaに適用してプリセット切り替えを即時反映 */}
-      <div className={styles.editorArea} style={presetStyle}>
-        <EditorContent editor={editor} className={styles.editorOuter} />
+      <div className={`${styles.editorArea} ${direction === 'vertical' ? styles.verticalArea : ''}`} style={presetStyle}>
+        <EditorContent
+          editor={editor}
+          className={`${styles.editorOuter} ${direction === 'vertical' ? styles.verticalOuter : ''}`}
+        />
       </div>
-      {/* ルビ入力ダイアログ */}
       <RubyInput editor={editor} />
     </div>
   )

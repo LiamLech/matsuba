@@ -121,6 +121,7 @@ export type Attachment = {
 export type ManuscriptId = ID
 
 export type WritingDirection = 'horizontal' | 'vertical'
+export type EditorMode = 'rich' | 'markdown'
 
 export type Manuscript = {
   id: ManuscriptId
@@ -131,6 +132,8 @@ export type Manuscript = {
   order: number
   direction: WritingDirection
   layoutId: LayoutPresetId
+  /** 編集モード（原稿ごとに記録） */
+  editorMode: EditorMode
   tags: TagId[]
   /** 参考画像（Phase 2で使用） */
   attachments: Attachment[]
@@ -138,7 +141,7 @@ export type Manuscript = {
   logs: EditLog[]
   /** 現在編集中のTiptap JSONコンテンツ */
   currentContent: TiptapJSON
-  /** 現在編集中のプレーンテキスト（エクスポート・検索用） */
+  /** 現在編集中のMarkdownテキスト（エクスポート・検索用） */
   currentContentText: string
 }
 

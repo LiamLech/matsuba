@@ -9,6 +9,7 @@ import { useLayoutStore } from '../../store/layoutStore'
 import { useUIStore } from '../../store/uiStore'
 import { PaneHeader } from './PaneHeader'
 import { TiptapEditor } from './TiptapEditor'
+import { MarkdownEditor } from './MarkdownEditor'
 import { VersionPanel } from './VersionPanel'
 import { ExportMenu } from './ExportMenu'
 import { ManuscriptDetailPanel } from './ManuscriptDetailPanel'
@@ -40,6 +41,7 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
   const manuscript = useManuscriptStore((s) =>
     s.manuscripts.find((m) => m.id === (manuscriptId ?? ''))
   ) ?? null
+  const updateManuscript = useManuscriptStore((s) => s.updateManuscript)
   const presets = useLayoutStore((s) => s.presets)
   const preset = presets.find((p) => p.id === (manuscript?.layoutId ?? 'prose')) ?? {
     id: 'prose', label: '散文', isBuiltIn: true,
@@ -123,6 +125,14 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
                 {displayContent || <span className={styles.emptyVersion}>（内容なし）</span>}
               </div>
             </div>
+          ) : manuscript.editorMode === 'markdown' ? (
+            <MarkdownEditor
+              manuscriptId={manuscriptId}
+              preset={preset}
+              onCharCountChange={setCharCount}
+              scrollRef={scrollRef}
+              onScroll={onScroll}
+            />
           ) : (
             <TiptapEditor
               manuscriptId={manuscriptId}
@@ -168,6 +178,19 @@ export const EditorPane: React.FC<EditorPaneProps> = ({
           )}
           <div className={styles.spacer} />
           {!isReadOnly && <CharCount count={charCount} />}
+          {/* モード切り替えボタン */}
+          {!isReadOnly && (
+            <button
+              className={`btn btn--ghost ${styles.toggleVersionBtn}`}
+              onClick={() => {
+                const newMode = manuscript.editorMode === 'rich' ? 'markdown' : 'rich'
+                updateManuscript(manuscriptId, { editorMode: newMode })
+              }}
+              title={manuscript.editorMode === 'rich' ? 'Markdownモードに切り替え' : 'リッチテキストモードに切り替え'}
+            >
+              {manuscript.editorMode === 'rich' ? 'MD' : 'RT'}
+            </button>
+          )}
           <ExportMenu
             manuscript={manuscript}
             currentVersion={
